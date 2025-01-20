@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+      "lib": ["es2019", "dom"],  // Include at least es2019
+      "target": "es2019"         // Set the target to es2019 or later
+    }
+  }
+  

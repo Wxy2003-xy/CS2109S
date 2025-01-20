@@ -1,3 +1,4 @@
+import copy
 x = 2109        # Declares and assigns a value to the variable x
 print(x + 1)   # Addition ; prints 2110
 print(x - 1)   # Subtraction ; prints 2108
@@ -215,13 +216,6 @@ print(X)
 ### Task 1.1 Scalar Multiplication
 
 def mult_scalar(A, c):
-    """
-    Returns a new matrix created by multiplying elements of matrix A by a scalar c.
-    Note
-    ----
-    Do not use numpy for this question.
-    """
-    """ YOUR CODE HERE """
     res = []
     for r in A:
         row = []
@@ -229,8 +223,6 @@ def mult_scalar(A, c):
             row.append(c * co)
         res.append(row) 
     return res
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
 
 def test_task_1_1():
     A = [[5, 7, 9], [1, 4, 3]]
@@ -253,17 +245,15 @@ def test_task_1_1():
 ### Task 1.2 Matrix Addition
 
 def add_matrices(A, B):
-    """
-    Returns a new matrix that is the result of adding matrix B to matrix A.
-    Note
-    ----
-    Do not use numpy for this question.
-    """
     if len(A) != len(B) or len(A[0]) != len(B[0]):
         raise Exception('A and B cannot be added as they have incompatible dimensions!') 
-    """ YOUR CODE HERE """
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
+    res = []
+    for i in range(len(A)): 
+        row = []
+        for j in range(len(A[0])):
+            row.append(A[i][j] + B[i][j])
+        res.append(row)
+    return res
 
 def test_task_1_2():
     A = [[5, 7, 9], [1, 4, 3]]
@@ -280,15 +270,13 @@ def test_task_1_2():
 ### Task 1.3 Transpose a Matrix
 
 def transpose_matrix(A):
-    """
-    Returns a new matrix that is the transpose of matrix A.
-    Note
-    ----
-    Do not use numpy for this question.
-    """
-    """ YOUR CODE HERE """
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
+    res = []
+    for i in range(len(A[0])):
+        col = []
+        for j in range(len(A)):
+            col.append(A[j][i])
+        res.append(col)
+    return res
 
 def test_task_1_3():
     A = [[5, 7, 9], [1, 4, 3]]
@@ -301,19 +289,25 @@ def test_task_1_3():
 
 ### Task 1.4 Multiply Two Matrices
 
-def mult_matrices(A, B):
-    """
-    Multiplies matrix A by matrix B, giving AB.
-    Note
-    ----
-    Do not use numpy for this question.
-    """
+def col_dot_product(A, B): 
+    if (len(A) != len(B)):
+        raise Exception("")
+    res = 0
+    for i in range(len(A)):
+        res = res + (A[i] * B[i])
+def mult_matrices(A, B): # naive 
     if len(A[0]) != len(B):
         raise Exception('Incompatible dimensions for matrix multiplication of A and B')
-    """ YOUR CODE HERE """
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
-
+    res = []
+    for i in range(len(A)):
+        row = []
+        for j in range(len(B[0])):
+            curr = 0
+            for k in range(len(A[0])):
+                curr += A[i][k] * B[k][j]
+            row.append(curr)
+        res.append(row)
+    return res
 def test_task_1_4():
     A = [[5, 7, 9], [1, 4, 3]]
     B = [[2, 5], [3, 6], [4, 7]]
@@ -523,9 +517,11 @@ def compute_death_rate_first_n_days(n, cases_cumulative, deaths_cumulative):
     Your implementation should not involve any iteration, including `map` and `filter`, 
     recursion, or any iterative approaches like for-loops.
     '''
-    """ YOUR CODE HERE """
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
+    select_day_cases = cases_cumulative[:, n-1:n]
+    select_day_deaths = deaths_cumulative[:, n-1:n]
+    case_mean = np.mean(select_day_cases, axis=1)
+    death_mean = np.mean(select_day_deaths, axis=1)
+    return np.nan_to_num(death_mean / case_mean)
 
 def test_task_2_1():
     n_cases_cumulative = cases_cumulative[:3, :] #Using data from CSV. Make sure to run relevant cell above
