@@ -651,9 +651,7 @@ def find_max_increase_in_cases(n_cases_increase):
     Your implementation should not involve any iteration, including `map` and `filter`, 
     recursion, or any iterative approaches like for-loops.
     '''
-    """ YOUR CODE HERE """
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
+    return np.max(n_cases_increase, axis=0)
 
 def test_task_2_3():
     n_cases_increase = np.ones((100, 20))
@@ -741,6 +739,7 @@ def compute_n_masks_purchaseable(healthcare_spending, mask_prices):
     recursion, or any iterative approaches like for-loops.
     '''
     """ YOUR CODE HERE """
+    return 100 * (np.sum(np.floor(healthcare_spending / mask_prices), axis=1))
     raise NotImplementedError
     """ YOUR CODE END HERE """
 
@@ -803,6 +802,8 @@ def compute_stringency_index(stringency_values):
     not use iterative approaches like for-loops.
     '''
     """ YOUR CODE HERE """
+    A = [1,1,3,2]
+    return stringency_values @ A
     raise NotImplementedError
     """ YOUR CODE END HERE """
 
@@ -917,6 +918,9 @@ def average_increase_in_cases(n_cases_increase, n_adj_entries_avg=7):
     recursion, or any iterative approaches like for-loops.
     '''
     """ YOUR CODE HERE """
+    set_nan = n_cases_increase.copy()
+    set_nan[:, :n_adj_entries_avg-1] = np.nan
+    return np.mean(set_nan[:, n_adj_entries_avg:], axis=1)
     raise NotImplementedError
     """ YOUR CODE END HERE """
 

@@ -1,0 +1,95 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}    % For UTF-8 character encoding
+\usepackage[T1]{fontenc}       % For proper font encoding
+\usepackage{lmodern}           % Improved font rendering
+\usepackage{amsmath}   % For advanced mathematical formatting
+\usepackage{amssymb}   % For mathematical symbols
+\usepackage{geometry}  % Adjust page margins
+\usepackage{enumerate} % For custom lists
+\usepackage{xcolor}  % for coloring
+\usepackage{amsthm}
+\usepackage{pdfpages}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\usepackage{listings}  % for code listings
+
+\lstset{frame=tb,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,   
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{brown},
+  stringstyle=\color{orange},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\geometry{top=1in, bottom=1in, left=1in, right=1in}
+
+\begin{document}
+
+\title{}
+\author{Wang Xiyu}
+\date{}
+\maketitle
+
+\section*{Problem Statement}
+fully observable $\land$ deterministic $\land$ static $\land$ discrete $\implies$ only need to observe once \newline
+To solve a prob using search: 
+\begin{itemize}
+    \item A goal or a set of goals
+    \item a model of the enironment  
+    \item a search algorithm 
+\end{itemize}
+
+goal formulation -> problem formulation -> search -> execute \newline
+\begin{enumerate}
+    \item goal formulation
+    \item problem formulation, eg. path finding 
+        \begin{itemize}
+            \item states: nodes representation invariant:: abstract states should correspond to concrete states
+            \item initial state: starting node
+            \item goal states/test: dest node \newline
+                Goal test: define the goal using a function $is\_goal $
+            \item actions: move along an edge :: $|actions(state)| \leq (branching\_factor)$
+            \item transition model: 
+                $(curr\_state, action) \implies next\_state $
+            \item action cost function: see edges
+        \end{itemize}
+    \item 
+\end{enumerate}
+
+
+
+\section*{Search}
+
+\subsection*{Uninformed search} 
+No information that could guide the seaech: mo clue how good a state is \newline
+\begin{lstlisting}
+    create frontir,
+    ...
+\end{lstlisting}
+frontier: queue: BFS
+\subsection*{Depth limited search} 
+limit the search to depth l \newline
+backtrack when the limit is hit. \newline
+time complexity: exponential to search depth \newline
+space complexity: size of the frontier \newline
+
+\subsection*{Iterative deeptening search} 
+seatch with depth from 0 to inf \newline
+return soln when found. Both complete 
+
+\section*{Concept Proof}
+
+\section*{Solution}
+\subsection*{Easy}
+
+\end{document}
