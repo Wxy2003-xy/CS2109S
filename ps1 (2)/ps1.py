@@ -28,7 +28,142 @@
 # representing the river, there are $(m-c)\multiply c$ valid partition, thus mc-c^2 valid states, asymptotically O(mc) since m >= c
 ### Task 1.6  - Implement Search (No Visited Memory)
 
-def mnc_search(m, c):  
+# #include <bits/stdc++.h>
+# using namespace std;
+
+# void transition(tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int> node,
+#                 queue<tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int>>* q, 
+#                 set<tuple<int, int, bool>>* visited);
+# bool is_goal(tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int> node);
+# vector<pair<int, int>> mnc_search(int m, int c);
+# // GPT generated test cases
+# int main() {
+# }
+
+# vector<pair<int, int>> mnc_search(int m, int c) {
+#     queue<tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int>> q;
+#     set<tuple<int, int, bool>> visited;
+#     vector<pair<int, int>> result;
+#     q.push(make_tuple(make_pair(0, 0), make_pair(m, c), result, true, 0));
+#     visited.insert(make_tuple(0, 0, true));
+
+#     while (!q.empty()) {
+#         tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int> state = q.front();
+#         q.pop();
+#         if (is_goal(state)) {
+#             return get<2>(state);
+#         }
+#         transition(state, &q, &visited);
+#     }
+#     return result;
+# }
+# //                      left                right           path           side   lvl   
+# bool is_goal(tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int> node) {
+#     return get<1>(node) == make_pair(0,0);
+# }
+# //                      left               right            path               side lvl
+# void transition(tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int> node,
+#                 queue<tuple<pair<int, int>, pair<int, int>, vector<pair<int, int>>, bool, int>>* q, 
+
+#                 set<tuple<int, int, bool>>* visited) {
+#     int m_l = get<0>(node).first;
+#     int m_r = get<1>(node).first;
+#     int c_l = get<0>(node).second;
+#     int c_r = get<1>(node).second;
+#     vector<pair<int, int>> path = get<2>(node);
+#     bool side = get<3>(node);
+#     int curr_lvl = get<4>(node);
+
+#     vector<pair<int, int>> moves = {{2, 0}, {0, 2}, {1, 0}, {0, 1}, {1, 1}};
+#     for (auto move : moves) {
+#         int dm = move.first; 
+#         int dc = move.second;
+#         int new_m_l = side ? m_l + dm : m_l - dm;
+#         int new_c_l = side ? c_l + dc : c_l - dc;
+#         int new_m_r = side ? m_r - dm : m_r + dm;
+#         int new_c_r = side ? c_r - dc : c_r + dc;
+#         if (new_m_l >= 0 && new_c_l >= 0 && new_m_r >= 0 && new_c_r >= 0 &&
+#             (new_m_l >= new_c_l || new_m_l == 0) &&
+#             (new_m_r >= new_c_r || new_m_r == 0)) {
+#             tuple<int, int, bool> mem = make_tuple(new_m_l, new_c_l, !side);
+#             if (visited->find(mem) == visited->end()) {
+#                 visited->insert(mem);
+#                 vector<pair<int, int>> updated_path = path;
+#                 updated_path.push_back(move);
+#                 q->push(make_tuple(make_pair(new_m_l, new_c_l), make_pair(new_m_r, new_c_r),
+#                         updated_path, !side, curr_lvl + 1));
+#             }
+#         }
+#     }
+# }
+from collections import deque
+from typing import Tuple, List, Deque, Union
+
+State = Tuple[Tuple[int, int], Tuple[int, int], List[Tuple[int, int]], bool, int]
+StateKey = Tuple[int, int, bool]
+def valid(new_m_l:int, new_c_l:int, new_m_r:int, new_c_r:int) -> bool:
+    return (new_m_l >= 0 and new_c_l >= 0 and new_m_r >= 0 and new_c_r >= 0 
+            and (new_m_l >= new_c_l or new_m_l == 0) and (new_m_r >= new_c_r or new_m_r == 0))
+def transition(node: State, q: Deque[State]) -> None:
+    m_l: int = node[0][0]
+    c_l: int = node[0][1]
+    m_r: int = node[1][0] 
+    c_r: int = node[1][1]
+    path: List[Tuple[int, int]] = node[2]
+    side: bool = node[3]
+    curr_lvl: int = node[4]
+    moves: List[Tuple[int, int]] = [(2,0), (0,2), (1,0), (0,1), (1,1)]
+    for move in moves: 
+        dm:int = move[0]
+        dc:int = move[1]
+        new_m_l:int = m_l + dm if side else m_l - dm
+        new_c_l:int = c_l + dc if side else c_l - dc
+        new_m_r:int = m_r - dm if side else m_r + dm
+        new_c_r:int = c_r - dc if side else c_r + dc
+        if (valid(new_m_l, new_c_l, new_m_r, new_c_r)): 
+            updated_path = path.copy()
+            updated_path.append(move)
+            new_state: State = ((new_m_l, new_c_l), (new_m_r, new_c_r), updated_path, not side, curr_lvl + 1)
+            q.append(new_state)
+
+def transition_mem(node: State, q: Deque[State], visited: set[StateKey]) -> None: 
+    m_l: int = node[0][0]
+    c_l: int = node[0][1]
+    m_r: int = node[1][0] 
+    c_r: int = node[1][1]
+    path: List[Tuple[int, int]] = node[2]
+    side: bool = node[3]
+    curr_lvl: int = node[4]
+    moves: List[Tuple[int, int]] = [(2,0), (0,2), (1,0), (0,1), (1,1)]
+    for move in moves: 
+        dm:int = move[0]
+        dc:int = move[1]
+        new_m_l:int = m_l + dm if side else m_l - dm
+        new_c_l:int = c_l + dc if side else c_l - dc
+        new_m_r:int = m_r - dm if side else m_r + dm
+        new_c_r:int = c_r - dc if side else c_r + dc
+        if (valid(new_m_l, new_c_l, new_m_r, new_c_r)): 
+            mem:Tuple[int, int, bool] = (new_m_l, new_c_l, not side)
+            if mem not in visited:
+                visited.add(mem)
+                updated_path = path.copy()
+                updated_path.append(move)
+                new_state: State = ((new_m_l, new_c_l), (new_m_r, new_c_r), updated_path, not side, curr_lvl + 1)
+                q.append(new_state)
+def is_goal(node: State) -> bool:
+    return node[1] == (0,0)
+def mnc_search(m, c) -> Union[List[Tuple[int, int]], bool]:  
+    q: Deque[State] = deque()
+    result: List[Tuple[int, int]] = []
+    q.append(((0, 0), (m, c), result, True, 0))
+    while q:
+        state: State = q.popleft()
+        if is_goal(state): 
+            if state[2] == []:
+                return False
+            return state[2]
+        transition(state, q)
+    return False
     '''
     Solution should be the action taken from the root node (initial state) to 
     the leaf node (goal state) in the search tree.
@@ -57,6 +192,18 @@ def test_task_1_6():
 ### Task 1.7 - Implement Search With Visited Memory
 
 def mnc_search_with_visited(m,c):
+    q: Deque[State] = deque()
+    visited: set[StateKey] = set()
+    result: List[Tuple[int, int]] = []
+    q.append(((0, 0), (m, c), result, True, 0))
+    while q:
+        state: State = q.popleft()
+        if is_goal(state): 
+            if state[2] == []:
+                return False
+            return state[2]
+        transition_mem(state, q, visited)
+    return False
     '''
     Modify your search algorithm in Task 1.6 by adding visited memory to speed it up!
 
