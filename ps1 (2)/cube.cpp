@@ -15,7 +15,6 @@ struct StateVectorHash { // hash the state, to be used to keep visited mem
     }
 };
 
-
 class Cube {
     public:
         int r;
@@ -293,8 +292,11 @@ class Cube {
             visited_cost[init_config] = 0; // Initial state has cost 0
 
             while (!q.empty()) {
-                auto [config, path, cost] = q.top();
+                tuple<vector<vector<int>>, vector<pair<int, int>>, double> state = q.top();
                 q.pop();
+                vector<vector<int>> config = get<0>(state);
+                vector<pair<int, int>> path = get<1>(state);
+                double cost = get<2>(state);
                 if (is_goal(config, goal)) {
                     return path;
                 }
