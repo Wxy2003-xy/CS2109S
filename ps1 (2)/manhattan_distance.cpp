@@ -32,7 +32,7 @@ double heuristic(const vector<vector<int>>& curr, const vector<vector<int>>& goa
             }
         }
     }
-    return cost;
+    return cost / (r * c);
 }
 
 void test_heuristic(const vector<vector<int>>& curr, const vector<vector<int>>& goal) {
@@ -42,9 +42,7 @@ void test_heuristic(const vector<vector<int>>& curr, const vector<vector<int>>& 
 int main() {
     r = 3;
     c = 4;
-    cout << "🔹 Running heuristic tests...\n";
 
-    // Test 1: Already solved puzzle (cost = 0)
     test_heuristic(
         {
             {0, 1, 2, 3},
@@ -84,8 +82,5 @@ int main() {
             {2, 2, 2}
         }
     );
-
-
-    cout << "✅ All heuristic tests passed!\n";
     return 0;
 }

@@ -96,138 +96,138 @@
 #         }
 #     }
 # }
-from collections import deque
-from typing import Tuple, List, Deque, Union
+# from collections import deque
+# from typing import Tuple, List, Deque, Union
 
-State = Tuple[Tuple[int, int], Tuple[int, int], List[Tuple[int, int]], bool, int]
-StateKey = Tuple[int, int, bool]
-def valid(new_m_l:int, new_c_l:int, new_m_r:int, new_c_r:int) -> bool:
-    return (new_m_l >= 0 and new_c_l >= 0 and new_m_r >= 0 and new_c_r >= 0 
-            and (new_m_l >= new_c_l or new_m_l == 0) and (new_m_r >= new_c_r or new_m_r == 0))
-def transition(node: State, q: Deque[State]) -> None:
-    m_l: int = node[0][0]
-    c_l: int = node[0][1]
-    m_r: int = node[1][0] 
-    c_r: int = node[1][1]
-    path: List[Tuple[int, int]] = node[2]
-    side: bool = node[3]
-    curr_lvl: int = node[4]
-    moves: List[Tuple[int, int]] = [(2,0), (0,2), (1,0), (0,1), (1,1)]
-    for move in moves: 
-        dm:int = move[0]
-        dc:int = move[1]
-        new_m_l:int = m_l + dm if side else m_l - dm
-        new_c_l:int = c_l + dc if side else c_l - dc
-        new_m_r:int = m_r - dm if side else m_r + dm
-        new_c_r:int = c_r - dc if side else c_r + dc
-        if (valid(new_m_l, new_c_l, new_m_r, new_c_r)): 
-            updated_path = path.copy()
-            updated_path.append(move)
-            new_state: State = ((new_m_l, new_c_l), (new_m_r, new_c_r), updated_path, not side, curr_lvl + 1)
-            q.append(new_state)
+# State = Tuple[Tuple[int, int], Tuple[int, int], List[Tuple[int, int]], bool, int]
+# StateKey = Tuple[int, int, bool]
+# def valid(new_m_l:int, new_c_l:int, new_m_r:int, new_c_r:int) -> bool:
+#     return (new_m_l >= 0 and new_c_l >= 0 and new_m_r >= 0 and new_c_r >= 0 
+#             and (new_m_l >= new_c_l or new_m_l == 0) and (new_m_r >= new_c_r or new_m_r == 0))
+# def transition(node: State, q: Deque[State]) -> None:
+#     m_l: int = node[0][0]
+#     c_l: int = node[0][1]
+#     m_r: int = node[1][0] 
+#     c_r: int = node[1][1]
+#     path: List[Tuple[int, int]] = node[2]
+#     side: bool = node[3]
+#     curr_lvl: int = node[4]
+#     moves: List[Tuple[int, int]] = [(2,0), (0,2), (1,0), (0,1), (1,1)]
+#     for move in moves: 
+#         dm:int = move[0]
+#         dc:int = move[1]
+#         new_m_l:int = m_l + dm if side else m_l - dm
+#         new_c_l:int = c_l + dc if side else c_l - dc
+#         new_m_r:int = m_r - dm if side else m_r + dm
+#         new_c_r:int = c_r - dc if side else c_r + dc
+#         if (valid(new_m_l, new_c_l, new_m_r, new_c_r)): 
+#             updated_path = path.copy()
+#             updated_path.append(move)
+#             new_state: State = ((new_m_l, new_c_l), (new_m_r, new_c_r), updated_path, not side, curr_lvl + 1)
+#             q.append(new_state)
 
-def transition_mem(node: State, q: Deque[State], visited: set[StateKey]) -> None: 
-    m_l: int = node[0][0]
-    c_l: int = node[0][1]
-    m_r: int = node[1][0] 
-    c_r: int = node[1][1]
-    path: List[Tuple[int, int]] = node[2]
-    side: bool = node[3]
-    curr_lvl: int = node[4]
-    moves: List[Tuple[int, int]] = [(2,0), (0,2), (1,0), (0,1), (1,1)]
-    for move in moves: 
-        dm:int = move[0]
-        dc:int = move[1]
-        new_m_l:int = m_l + dm if side else m_l - dm
-        new_c_l:int = c_l + dc if side else c_l - dc
-        new_m_r:int = m_r - dm if side else m_r + dm
-        new_c_r:int = c_r - dc if side else c_r + dc
-        if (valid(new_m_l, new_c_l, new_m_r, new_c_r)): 
-            mem:Tuple[int, int, bool] = (new_m_l, new_c_l, not side)
-            if mem not in visited:
-                visited.add(mem)
-                updated_path = path.copy()
-                updated_path.append(move)
-                new_state: State = ((new_m_l, new_c_l), (new_m_r, new_c_r), updated_path, not side, curr_lvl + 1)
-                q.append(new_state)
-def is_goal(node: State) -> bool:
-    return node[1] == (0,0)
-def mnc_search(m, c) -> Union[List[Tuple[int, int]], bool]:  
-    q: Deque[State] = deque()
-    result: List[Tuple[int, int]] = []
-    q.append(((0, 0), (m, c), result, True, 0))
-    while q:
-        state: State = q.popleft()
-        if is_goal(state): 
-            if state[2] == []:
-                return False
-            return state[2]
-        transition(state, q)
-    return False
-    '''
-    Solution should be the action taken from the root node (initial state) to 
-    the leaf node (goal state) in the search tree.
+# def transition_mem(node: State, q: Deque[State], visited: set[StateKey]) -> None: 
+#     m_l: int = node[0][0]
+#     c_l: int = node[0][1]
+#     m_r: int = node[1][0] 
+#     c_r: int = node[1][1]
+#     path: List[Tuple[int, int]] = node[2]
+#     side: bool = node[3]
+#     curr_lvl: int = node[4]
+#     moves: List[Tuple[int, int]] = [(2,0), (0,2), (1,0), (0,1), (1,1)]
+#     for move in moves: 
+#         dm:int = move[0]
+#         dc:int = move[1]
+#         new_m_l:int = m_l + dm if side else m_l - dm
+#         new_c_l:int = c_l + dc if side else c_l - dc
+#         new_m_r:int = m_r - dm if side else m_r + dm
+#         new_c_r:int = c_r - dc if side else c_r + dc
+#         if (valid(new_m_l, new_c_l, new_m_r, new_c_r)): 
+#             mem:Tuple[int, int, bool] = (new_m_l, new_c_l, not side)
+#             if mem not in visited:
+#                 visited.add(mem)
+#                 updated_path = path.copy()
+#                 updated_path.append(move)
+#                 new_state: State = ((new_m_l, new_c_l), (new_m_r, new_c_r), updated_path, not side, curr_lvl + 1)
+#                 q.append(new_state)
+# def is_goal(node: State) -> bool:
+#     return node[1] == (0,0)
+# def mnc_search(m, c) -> Union[List[Tuple[int, int]], bool]:  
+#     q: Deque[State] = deque()
+#     result: List[Tuple[int, int]] = []
+#     q.append(((0, 0), (m, c), result, True, 0))
+#     while q:
+#         state: State = q.popleft()
+#         if is_goal(state): 
+#             if state[2] == []:
+#                 return False
+#             return state[2]
+#         transition(state, q)
+#     return False
+#     '''
+#     Solution should be the action taken from the root node (initial state) to 
+#     the leaf node (goal state) in the search tree.
 
-    Parameters
-    ----------    
-    m: no. of missionaries
-    c: no. of cannibals
+#     Parameters
+#     ----------    
+#     m: no. of missionaries
+#     c: no. of cannibals
     
-    Returns
-    ----------    
-    Returns the solution to the problem as a tuple of steps. Each step is a tuple of two numbers x and y, indicating the number of missionaries and cannibals on the boat respectively as the boat moves from one side of the river to another. If there is no solution, return False.
-    '''
-    """ YOUR CODE HERE """
+#     Returns
+#     ----------    
+#     Returns the solution to the problem as a tuple of steps. Each step is a tuple of two numbers x and y, indicating the number of missionaries and cannibals on the boat respectively as the boat moves from one side of the river to another. If there is no solution, return False.
+#     '''
+#     """ YOUR CODE HERE """
     
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
+#     raise NotImplementedError
+#     """ YOUR CODE END HERE """
 
-def test_task_1_6():
-    # Note: These solutions are not necessarily unique! (i.e. there may be other optimal solutions.)
-    assert mnc_search(2,1) == ((2, 0), (1, 0), (1, 1))
-    assert mnc_search(2,2) == ((1, 1), (1, 0), (2, 0), (1, 0), (1, 1))
-    assert mnc_search(3,3) == ((1, 1), (1, 0), (0, 2), (0, 1), (2, 0), (1, 1), (2, 0), (0, 1), (0, 2), (1, 0), (1, 1))
-    assert mnc_search(0, 0) == False
+# def test_task_1_6():
+#     # Note: These solutions are not necessarily unique! (i.e. there may be other optimal solutions.)
+#     assert mnc_search(2,1) == ((2, 0), (1, 0), (1, 1))
+#     assert mnc_search(2,2) == ((1, 1), (1, 0), (2, 0), (1, 0), (1, 1))
+#     assert mnc_search(3,3) == ((1, 1), (1, 0), (0, 2), (0, 1), (2, 0), (1, 1), (2, 0), (0, 1), (0, 2), (1, 0), (1, 1))
+#     assert mnc_search(0, 0) == False
 
-### Task 1.7 - Implement Search With Visited Memory
+# ### Task 1.7 - Implement Search With Visited Memory
 
-def mnc_search_with_visited(m,c):
-    q: Deque[State] = deque()
-    visited: set[StateKey] = set()
-    result: List[Tuple[int, int]] = []
-    q.append(((0, 0), (m, c), result, True, 0))
-    while q:
-        state: State = q.popleft()
-        if is_goal(state): 
-            if state[2] == []:
-                return False
-            return state[2]
-        transition_mem(state, q, visited)
-    return False
-    '''
-    Modify your search algorithm in Task 1.6 by adding visited memory to speed it up!
+# def mnc_search_with_visited(m,c):
+#     q: Deque[State] = deque()
+#     visited: set[StateKey] = set()
+#     result: List[Tuple[int, int]] = []
+#     q.append(((0, 0), (m, c), result, True, 0))
+#     while q:
+#         state: State = q.popleft()
+#         if is_goal(state): 
+#             if state[2] == []:
+#                 return False
+#             return state[2]
+#         transition_mem(state, q, visited)
+#     return False
+#     '''
+#     Modify your search algorithm in Task 1.6 by adding visited memory to speed it up!
 
-    Parameters
-    ----------    
-    m: no. of missionaries
-    c: no. of cannibals
+#     Parameters
+#     ----------    
+#     m: no. of missionaries
+#     c: no. of cannibals
     
-    Returns
-    ----------    
-    Returns the solution to the problem as a tuple of steps. Each step is a tuple of two numbers x and y, indicating the number of missionaries and cannibals on the boat respectively as the boat moves from one side of the river to another. If there is no solution, return False.
-    '''
-    """ YOUR CODE HERE """
-    raise NotImplementedError
-    """ YOUR CODE END HERE """
+#     Returns
+#     ----------    
+#     Returns the solution to the problem as a tuple of steps. Each step is a tuple of two numbers x and y, indicating the number of missionaries and cannibals on the boat respectively as the boat moves from one side of the river to another. If there is no solution, return False.
+#     '''
+#     """ YOUR CODE HERE """
+#     raise NotImplementedError
+#     """ YOUR CODE END HERE """
 
-def test_task_1_7():
-    # Note: These solutions are not necessarily unique! (i.e. there may be other optimal solutions.)
-    assert mnc_search_with_visited(2,1) == ((2, 0), (1, 0), (1, 1))
-    assert mnc_search_with_visited(2,2) == ((1, 1), (1, 0), (2, 0), (1, 0), (1, 1))
-    assert mnc_search_with_visited(3,3) == ((1, 1), (1, 0), (0, 2), (0, 1), (2, 0), (1, 1), (2, 0), (0, 1), (0, 2), (1, 0), (1, 1))
-    assert mnc_search_with_visited(0,0) == False
+# def test_task_1_7():
+#     # Note: These solutions are not necessarily unique! (i.e. there may be other optimal solutions.)
+#     assert mnc_search_with_visited(2,1) == ((2, 0), (1, 0), (1, 1))
+#     assert mnc_search_with_visited(2,2) == ((1, 1), (1, 0), (2, 0), (1, 0), (1, 1))
+#     assert mnc_search_with_visited(3,3) == ((1, 1), (1, 0), (0, 2), (0, 1), (2, 0), (1, 1), (2, 0), (0, 1), (0, 2), (1, 0), (1, 1))
+#     assert mnc_search_with_visited(0,0) == False
 
-### Task 1.8 - Search With vs Without Visited Memory
+# ### Task 1.8 - Search With vs Without Visited Memory
 
 import copy
 import heapq
@@ -251,6 +251,13 @@ from utils import PriorityQueue
 
 ### Task 2.1 - Design a heuristic for A* Search
 
+
+def unflatten_2d(iterable, shape):
+    rows, cols = shape
+    matrix = []
+    for row in range(rows):
+        matrix.append(iterable[row * cols : row * cols + cols])
+    return matrix
 def heuristic_func(problem: cube.Cube, state: cube.State) -> float:
     r"""
     Computes the heuristic value of a state
@@ -262,15 +269,42 @@ def heuristic_func(problem: cube.Cube, state: cube.State) -> float:
     Returns:
         h_n (float): the heuristic value 
     """
-    h_n = 0.0
+    state2d = cube.unflatten_2d(state.layout, state.shape)
+    r = len(state2d)
+    c = len(state2d[0])
+    hashmap = dict()
+    for i in range(0, r):
+        for j in range(0, c):
+            if (state2d[i][j] not in hashmap): 
+                hashmap[state2d[i][j]] = -1
+
+    h_n:float = 0.0
     goals = problem.goal
+    goals2d = cube.unflatten_2d(goals.layout, goals.shape)
+    for i in range(len(state2d)):
+        for j in range(len(state2d[0])):
+            goal_val = goals2d[i][j]
+            if (state2d[i][j] == goal_val):
+                continue
+            else:
+                n = 0
+                for p in range(len(state2d)):
+                    for q in range(len(state2d[0])):
+                        if (state2d[p][q] == goal_val 
+                            and (r * p + q > hashmap[goal_val]) 
+                            and (state2d[p][q] != goals2d[p][q])):
+                            n = r * p + q
+                            hashmap[goal_val] = n
+            h_n += min(abs(n % c - j), abs(j - n % c))
+            h_n += min(abs(n / c - i), abs(i - n / c))
+            print(h_n / (r * c))
+    return h_n / (r * c)
 
     """ YOUR CODE HERE """
     raise NotImplementedError
     """ YOUR CODE END HERE """
 
     return h_n
-
 # goal state
 cube_goal = {
     'initial': [['N', 'U', 'S'],
@@ -341,6 +375,8 @@ cube_3x4 = {
 def test_task_2_1():
     def test_heuristic(heuristic_func, case):
         problem = cube.Cube(cube.State(case['initial']), cube.State(case['goal']))
+        print(case['initial'] + case['goal'])
+        print(heuristic_func(problem, problem.goal))
         assert heuristic_func(problem, problem.goal) == 0, "Heuristic is not 0 at the goal state"
         assert heuristic_func(problem, problem.initial) <= len(case['solution']), "Heuristic is not admissible"
     
@@ -351,8 +387,143 @@ def test_task_2_1():
     test_heuristic(heuristic_func, cube_flip_intermediate)
     test_heuristic(heuristic_func, cube_3x4)
 
-### Task 2.2 - Implement A* search 
+class State:
+    r"""State class describes the setting of the Cube
 
+    Args:
+         layout (List[List[int]]): a 2-D list that represents the layout of the cube's faces.
+
+    Example:
+        state = State([1,2,3],[4,5,6])
+        This represents the state with a layout like:
+            label:    0   1   2
+                0   | 1 | 2 | 3 |
+                1   | 4 | 5 | 6 |
+
+    Methods:
+        left(label): move the @label row left
+            returns the copy of new state (State)
+
+        right(label): move the @label row right
+            returns the copy of new state (State)
+
+        up(label): move the @label col up
+            returns the copy of new state (State)
+
+        down(label): move the @label col down
+            returns the copy of new state (State)
+    """
+
+    def __init__(self, layout: List[List[int]]):
+        self.__layout = flatten(layout)
+        self.__shape = []
+        while isinstance(layout, list):
+            self.__shape.append(len(layout))
+            layout = layout[0]
+
+    def __eq__(self, state: "State"):
+        if isinstance(state, State):
+            same_shape = (
+                state.shape[0] == self.__shape[0] and state.shape[1] == self.__shape[1]
+            )
+            same_layout = all([x == y for x, y in zip(self.__layout, state.layout)])
+            return same_shape and same_layout
+        else:
+            return False
+
+    def __hash__(self) -> int:
+        return hash(tuple(self.__layout))
+
+    def __repr__(self) -> str:
+        return str({"shape": self.__shape, "layout": self.__layout})
+
+    def __str__(self):
+        # Header
+        row_str = f"{' '*5} "
+        for col in range(self.shape[1]):
+            row_str += f"{col:^5d} "
+        cube_str = row_str + "\n"
+        cube_str += f"{' '*5}+{'-----+'*self.shape[1]}\n"
+        # Content
+        for row in range(self.shape[0]):
+            row_str = f"{row:^5d}|"
+            for col in range(self.shape[1]):
+                row_str += f"{str(self.layout[row*self.shape[1]+col]):^5s}|"
+            cube_str += row_str + "\n"
+            cube_str += f"{' '*5}+{'-----+'*self.shape[1]}\n"
+
+        return cube_str
+
+    @property
+    def shape(self):
+        return copy.deepcopy(self.__shape)
+
+    @property
+    def layout(self):
+        return copy.deepcopy(self.__layout)
+
+    def left(self, label):
+        layout = self.layout
+        rows, cols = self.shape
+        head = layout[label * cols]
+        for i in range(cols - 1):
+            layout[label * cols + i] = layout[label * cols + i + 1]
+        layout[(label + 1) * cols - 1] = head
+        return State(unflatten_2d(layout, self.shape))
+
+    def right(self, label):
+        layout = self.layout
+        rows, cols = self.shape
+        tail = layout[(label + 1) * cols - 1]
+        for i in range(cols - 1, 0, -1):
+            layout[label * cols + i] = layout[label * cols + i - 1]
+        layout[label * cols] = tail
+        return State(unflatten_2d(layout, self.shape))
+
+    def up(self, label):
+        layout = self.layout
+        rows, cols = self.shape
+        head = layout[label]
+        for i in range(rows - 1):
+            layout[label + cols * i] = layout[label + cols * (i + 1)]
+        layout[label + cols * (rows - 1)] = head
+        return State(unflatten_2d(layout, self.shape))
+
+    def down(self, label):
+        layout = self.layout
+        rows, cols = self.shape
+        tail = layout[label + cols * (rows - 1)]
+        for i in range(rows - 1, 0, -1):
+            layout[label + cols * i] = layout[label + cols * (i - 1)]
+        layout[label] = tail
+        return State(unflatten_2d(layout, self.shape))
+
+
+### Task 2.2 - Implement A* search 
+import heapq
+from typing import Dict, List, Optional, Tuple, Union
+from itertools import product
+Action = List[Union[int, str]]
+def unflatten_2d(iterable, shape):
+    rows, cols = shape
+    matrix = []
+    for row in range(rows):
+        matrix.append(iterable[row * cols : row * cols + cols])
+    return matrix
+def transition(cube, state, action_set, cur, pq, visited, heuristic_func):
+    cost: float = cur[0]
+    cur_path: List[Action] = cur[1]
+    cur_config: State = cur[2]
+    config = cur_config.layout
+    for i in range(len(action_set)):
+        new_config = getattr(cur_config, action_set[i][1])(action_set[i][0]) 
+        new_cost = cost + 1.0 + heuristic_func(cube, new_config)
+        if (new_config not in visited or visited[new_config] > new_cost):
+            visited[new_config] = new_cost
+            new_path = cur_path.copy() + [(action_set[i][0], action_set[i][1])]
+            new_state = (new_cost, new_path, new_config)
+            heapq.heappush(pq, new_state)
+    
 def astar_search(problem: cube.Cube, heuristic_func: Callable):
     r"""
     A* Search finds the solution to reach the goal from the initial.
@@ -365,9 +536,29 @@ def astar_search(problem: cube.Cube, heuristic_func: Callable):
     Returns:
         solution (List[Action]): the action sequence
     """
+    vert_move = ["left", "right"]  # ✅ Store method names
+    hori_move = ["up", "down"]
+    hori_dim = []
+    for i in range(len(unflatten_2d(problem.initial.layout, problem.initial.shape))):
+        hori_dim.append(i) 
+    vert_dim = []
+    for i in range(len(unflatten_2d(problem.initial.layout, problem.initial.shape)[0])):
+        vert_dim.append(i)
+    action_set = list(product(hori_dim, vert_move)) + list(product(vert_dim, hori_move))
+    #             cost,   partial_path, cur_config
     fail = True
     solution = []
-
+    pq = []
+    visited = dict()
+    heapq.heappush(pq, (0.0, [], problem.initial))
+    visited[problem.initial] = 0.0
+    while pq:
+        cur = heapq.heappop(pq)
+        if (problem.goal_test(cur[2])):
+            return cur[1]
+        transition(problem, cur[2], action_set, cur, pq, visited, heuristic_func)
+    return False
+    
     """ YOUR CODE HERE """
     raise NotImplementedError
     """ YOUR CODE END HERE """
@@ -430,8 +621,8 @@ def test_task_2_4():
 
 
 if __name__ == '__main__':
-    test_task_1_6()
-    test_task_1_7()
+    # test_task_1_6()
+    # test_task_1_7()
     test_task_2_1()
     test_task_2_2()
     test_task_2_4()

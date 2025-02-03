@@ -136,7 +136,8 @@ class Cube {
                         for (int p = 0; p < r; p++) {
                             for (int q = 0; q < c; q++) {
                                 if (curr[p][q] == g // find a tile that should be placed here
-                                        && (r * p + q > misplaced_idx[g]) // its index should be larger than the index of the last tile of the same type being used to replace misplaced tile
+                                        && (r * p + q > misplaced_idx[g]) // its index should be larger than the index of 
+                                                                          // the last tile of the same type being used to replace misplaced tile
                                         && curr[p][q] != goal[p][q]) { // this tile will be moved thus it shoulnt be at the place it should be as well
                                     n = r * p + q; // if find one, update the index of the tile to replace the misplaced tile
                                     misplaced_idx[g] = n;
@@ -150,8 +151,8 @@ class Cube {
                     }
                 }
             }
-            // return cost / (max(r, c));
-            return 1;
+            cout<<cost / (r * c)<<endl;
+            return cost / (r * c);
         }
         void astar_transition(tuple<vector<vector<int>>, vector<pair<int, int>>, double> state,
                             priority_queue<tuple<vector<vector<int>>, vector<pair<int, int>>, double>,
