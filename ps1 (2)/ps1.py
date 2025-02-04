@@ -297,7 +297,6 @@ def heuristic_func(problem: cube.Cube, state: cube.State) -> float:
                             hashmap[goal_val] = n
             h_n += min(abs(n % c - j), abs(j - n % c))
             h_n += min(abs(n / c - i), abs(i - n / c))
-            print(h_n / (r * c))
     return h_n / (r * c)
 
     """ YOUR CODE HERE """
@@ -375,8 +374,6 @@ cube_3x4 = {
 def test_task_2_1():
     def test_heuristic(heuristic_func, case):
         problem = cube.Cube(cube.State(case['initial']), cube.State(case['goal']))
-        print(case['initial'] + case['goal'])
-        print(heuristic_func(problem, problem.goal))
         assert heuristic_func(problem, problem.goal) == 0, "Heuristic is not 0 at the goal state"
         assert heuristic_func(problem, problem.initial) <= len(case['solution']), "Heuristic is not admissible"
     
@@ -536,6 +533,7 @@ def astar_search(problem: cube.Cube, heuristic_func: Callable):
     Returns:
         solution (List[Action]): the action sequence
     """
+    count = 0
     vert_move = ["left", "right"]  # ✅ Store method names
     hori_move = ["up", "down"]
     hori_dim = []
@@ -553,10 +551,13 @@ def astar_search(problem: cube.Cube, heuristic_func: Callable):
     heapq.heappush(pq, (0.0, [], problem.initial))
     visited[problem.initial] = 0.0
     while pq:
+        count = count+1
         cur = heapq.heappop(pq)
         if (problem.goal_test(cur[2])):
+            print("states explore: ", count)
             return cur[1]
         transition(problem, cur[2], action_set, cur, pq, visited, heuristic_func)
+    
     return False
     
     """ YOUR CODE HERE """
@@ -593,7 +594,8 @@ def test_task_2_2():
 ### Task 2.3 - Consistency & Admissibility
 
 ### Task 2.4 - Implement Uninformed Search
-
+def vanila_heu(problem: cube.Cube, state: cube.State) -> float:
+    return 1
 def uninformed_search(problem: cube.Cube):
     r"""
     Uninformed Search finds the solution to reach the goal from the initial.
@@ -606,6 +608,8 @@ def uninformed_search(problem: cube.Cube):
         solution (List[Action]): the action sequence
     """
     """ YOUR CODE HERE """
+    print("usc: ")
+    return astar_search(problem, vanila_heu)
     raise NotImplementedError
     """ YOUR CODE END HERE """
 

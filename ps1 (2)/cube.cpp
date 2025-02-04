@@ -122,6 +122,7 @@ class Cube {
                 }
             }
         }
+        //! ==========================================================================================
                 // using heuristics
         double heuristic(const vector<vector<int>>& curr, const vector<vector<int>>& goal) {
             vector<int> misplaced_idx(r, -1); // to keep track of last misplaced element, so to not using it again

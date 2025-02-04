@@ -1,19 +1,20 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}    % For UTF-8 character encoding
-\usepackage[T1]{fontenc}       % For proper font encoding
-\usepackage{lmodern}           % Improved font rendering
-\usepackage{amsmath}   % For advanced mathematical formatting
-\usepackage{amssymb}   % For mathematical symbols
-\usepackage{geometry}  % Adjust page margins
-\usepackage{enumerate} % For custom lists
-\usepackage{xcolor}  % for coloring
+\usepackage[utf8]{inputenc}    
+\usepackage[T1]{fontenc}       
+\usepackage{lmodern}           
+\usepackage{amsmath}   
+\usepackage{amssymb}   
+\usepackage{geometry}  
+\usepackage{enumerate} 
+\usepackage{xcolor}  
 \usepackage{amsthm}
 \usepackage{pdfpages}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}[theorem]{Definition}
-\usepackage{listings}  % for code listings
+\usepackage{listings}  
+\usepackage{dsfont}
 
 \lstset{frame=tb,
   language=C,
@@ -131,14 +132,14 @@ No information that could guide the seaech: no clue how good a state is
     // create visited // with vsited memory
     insert Node(initial_state) to frontier 
     while frontier is not empty: 
-        node = frontier.pop() 
+        node &= frontier.pop() 
         if node.state is goal: 
             return solution 
     //  if node.state in visited: // with vsited memory
     //     continue 
     //  visited.add(state)
         for action in actions(node.state): 
-        next_state = transition(node.state, action) 
+        next_state &= transition(node.state, action) 
         frontier.add(Node(next_state)) 
     return failure
 \end{lstlisting}
@@ -163,15 +164,15 @@ time complexity: exponential to search depth \newline
 space complexity: size of the frontier \newline
 \begin{lstlisting}
     create frontier 
-    tier = 0
+    tier &= 0
     insert Node(initial_state) to frontier 
-    while (!empty(frontier)) &&  (tier <= limit):
-        node = frontier.pop() 
+    while (!empty(frontier)) &&  (tier <&= limit):
+        node &= frontier.pop() 
         tier++
         if node.state is goal: 
             return solution 
         for action in actions(node.state): 
-        next_state = transition(node.state, action) 
+        next_state &= transition(node.state, action) 
         frontier.add(Node(next_state)) 
     return failure
 \end{lstlisting}
@@ -180,15 +181,15 @@ search with depth from 0 to inf \newline
 return soln when found. Both complete 
 \begin{lstlisting}
     create frontier 
-    tier = 0
+    tier &= 0
     insert Node(initial_state) to frontier 
-    while (!empty(frontier)) && (tier <= limit):
-        node = frontier.pop() 
+    while (!empty(frontier)) && (tier <&= limit):
+        node &= frontier.pop() 
         tier++
         if node.state is goal: 
             return solution 
         for action in actions(node.state): 
-        next_state = transition(node.state, action) 
+        next_state &= transition(node.state, action) 
         frontier.add(Node(next_state)) 
     return failure
 \end{lstlisting}
@@ -212,5 +213,285 @@ return soln when found. Both complete
 \# Not complete if not tracking visited nodes, search may stuck in loop before visiting all nodes. \newline
 * In terms of some notion of depth/tier \newline
 ** If used with DFS
+
+
+
+
+
+\section{Local Search}
+Systematic search: typically complete and optimal under certain constraints. However intractable sometimes\newline
+Local search: typically incomplete and suboptimal, but has anytime property, ie. longer time -> better solution. Able to provide good enough solution under reasonable amount of time. \newline
+
+
+\subsection{}
+\begin{enumerate}
+    \item Start at random position in the state space
+    \item iteratively move from a state to another neighouuring state vie perturbation or construction 
+    \item solution is the final state 
+\end{enumerate}
+
+\begin{equation}
+    \text{State space: all possible configuration}
+\end{equation}
+\begin{equation}
+    \text{Search space: a subset of state space that will be explored}
+\end{equation}
+
+\subsubsection{Perturbation search}
+\begin{itemize}
+    \item Search space: complete candidate solutons
+    \item search step: modification of one or more solution 
+\end{itemize}
+For example: swap a path with another path \newline
+\subsubsection{Constructive search}
+\begin{itemize}
+    \item partial candidate soluton
+    \item extension of one or more solution
+\end{itemize}
+For example: path finding\newline
+
+
+\subsection{}
+goal formulation -> problem formulation -> search -> execute \newline
+\begin{enumerate}
+    \item goal formulation
+    \item problem formulation, eg. path finding 
+        \begin{itemize}
+            \item states: nodes representation invariant:: abstract states MAYNOT directly correspond to concrete states
+            \item initial state: starting node, a candidate solution
+            \item goal states/test: dest node [optional]\newline
+                Goal test: define the goal using a function $is\_goal $
+                $f(curr\_state, action) \implies next\_state $
+            \item Successor function: a funciton that generates neighbouring states by applying modifications from the curren tstate. This defines the local search space 
+            
+        \end{itemize}
+\end{enumerate}
+\subsection{Evaluation function}
+A math function that assess the quality or desireability of the solution. \newline
+Some solutions may be unacceptable but there are some less bad than the others. 
+\subsection{Hill Climbing/ Greedy Local Search}
+\begin{lstlisting}
+    curr_state &= init_state
+    while 1:
+        best_succ &= best(successor(curr_state))
+        if (eval(best) <&= eval(curr_state))
+            return curr_state
+        curr_state &= best_succ
+\end{lstlisting}
+
+\subsection{State space landscape}
+\begin{itemize}
+    \item Global max: 
+    \item Local max:
+    \item shoulder: 
+\end{itemize}
+
+
+
+
+\section{Adversarial search}
+\subsection{Classical adversarial games}
+\begin{itemize}
+    \item Fully observable
+    \item Deterministic
+    \item discrete
+    \item No infinite run
+    \item 2-player zero-sum
+    \item turn taking
+\end{itemize}
+\subsection*{termns}
+\begin{itemize}
+    \item Player: agent
+    \item Turn: 
+    \item Move
+    \item End state
+    \item winning conditon
+    \item 
+\end{itemize}
+\subsection{Problem formulation in adversarial search}
+        \begin{itemize}
+            \item states: nodes representation invariant:: abstract states MAYNOT directly correspond to concrete states
+            \item initial state: starting node, a candidate solution
+            \item Terminal State: state the outcome of the game when it terminates
+            \item Utility function: output the value of a state from the perspetive of our agent 
+        \end{itemize}
+
+\subsection{Minimax}
+In the view of A, A try to maximize the outcome of the game, B will try to minimize A's outcome, as the gam is zero sum\newline
+\begin{itemize}
+    \item expend(state) => [a]
+    
+
+\end{itemize}
+\begin{lstlisting}[mathescape=true]
+    max_value(state):
+        if is_terminal(state): return utility(state)
+        v &= -$\infty$
+        for next_state in expand(state):
+            v &= max(v, min value for player A in next_state)
+        return v
+    
+    min_value(state):
+        if is_terminal(state): return utility(state)
+        v &= $\infty$
+        for next_state in expand(state):
+            v &= min(v, max value for player A in next_state)
+        return v
+
+    minimax(state): 
+        v &= max_value(state)
+        return action in expand(state) with value v
+\end{lstlisting}
+
+\subsection{Alpha-beta prunning}
+From the viewpoint of the MAX player:
+\begin{itemize}
+    \item $\alpha$: the value of the best choice for the MAX player so far
+    \item $\beta$: the value of the best choice for the MIN player so far
+\end{itemize}
+An optimized version of the Minimax algorithm using prunning:
+\begin{lstlisting}[mathescape=true]
+    max_value(state, $\alpha$, $\beta$):
+        if is_terminal(state): return utility(state)
+        v &= -$\infty$
+        for next_state in expand(state):
+            v &= max(v, min(v, $\alpha$, $\beta$))
+        return v
+    
+    min_value(state, $\alpha$, $\beta$):
+        if is_terminal(state): return utility(state)
+        v &= $\infty$
+        for next_state in expand(state):
+            v &= min(v, max(v, $\alpha$, $\beta$))
+        return v
+
+    alpha-beta search(state): 
+        v &= max_value(state, -$\infty$, $\infty$) // initialized $\alpha$ to be -$\infty$, $\beta$ to $\infty$
+        return action in expand(state) with value v
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Learning agent }
+For problems that the function are difficult to specify, solutions re intractale to compute in general. Typically episodic, 
+\[DL\subset ML\subset AL\]
+\subsection{supervised}
+Learn the mapping input, feedback given -> output, given a dataset, 
+it minimizes the difference betwenn the prediction and the provided correct ans
+using a leanign algorithm  e.g. image ientification
+\begin{enumerate}
+    \item Train phase: try minimizing the diff between pred and correct ans given using the training set, 
+    resulting in a trainign agen function, known as the model/hypothesis
+    \item Testing/evaluation phase: using a test set to measure the performance of the model. 
+    The performance on unseen data measures the generalization of the model 
+\end{enumerate}
+
+
+
+\subsubsection*{Task}
+\begin{itemize}
+    \item Classification: to predict discreate labels or catagories on the input features
+    \item Regression: predict continuous numetical value based on input features
+\end{itemize}
+\subsubsection*{Dataset}
+\[D &= \bigcup_{[1, n]}\{ (x^{(i)}, y^{(i)})\}\]
+\subsubsection*{True data generation function}
+\[y &= f^*(x) + \epsilon\]
+where $f^*(x)$ is true but unknow, which generates the label from the input features; $\epsilon$ is some noise or error term, which account for the randomness or imperfection in the date generating process. \newline
+the goal is to find a function that best approximately $f^*(x)$
+\subsubsection*{Hypothesis class}
+THE set of models or functions that maps from inputs to outputs $h:X \implies Y$ that can be learned by a learing algorithm. 
+Each element of the hypo clas $h \in \mathcal{H}$ 
+\subsubsection*{LEarnign algorithm }
+\[A(D_{train}, H_{hypo}) &= h(x),  h\in \mathcal{H} \approx f^*(x)\]
+\subsubsection*{PErformance measure}
+\[h(x) \approx f^*(x)\]
+\[PM(D_{test}, h \in H_{hypo}) \mapsto \]
+Try the hypothesis h on a new set of examples (test data)\\
+
+\subsubsection*{Regression: error}
+\begin{equation}
+    \text{Absolute error} &= |\hat{y} - y|
+\end{equation}
+\begin{equation}
+    \text{Squared error} &= (\hat{y} - y)^2 
+\end{equation}
+Mean absolute error
+\[MAE &= \dots\]
+where 
+\[\hat{y}^{(i)} &= h(x^{(i)})\]
+Accuracy: 
+\[A &= \frac{1}{N} \sum_{i=1}^{n} \mathds{1}_{\hat{y}^{(i)} &= y^{(i)}}\]
+
+
+
+\subsubsection*{confusion matrix}
+True positive, false positive, false negatve, true negative (2, 1, 3, 4 quadrnt)\newline
+\[Accuracy &= \frac{TP + TN}{TP + FN + FP + TN}\]
+\[Precision &= \frac{TP}{(TP + FP)}\]
+maximize if FP is costly
+\[Recall &= \frac{TP}{(TP + FN)}\]
+maximize recall if FN is dangerous
+\[F1 &= \frac{2}{\frac{1}{P} + \frac{1}{R}}\]
+
+
+\subsection[Supervised]{Decision Tree}
+Greedy, top-down, recursive, use
+\begin{lstlisting}[mathescape=true]
+    DTL(examples, attributes, default):
+        if (examples &= $\emptyset$): return default
+        if ($\forall e \in example, \text{e has the same classification }c$): return c
+        if (attributes &= $\emptyset$): return mode(examples)
+
+        best &= choose_attribute(attributes, examples)
+        tree &= new decision tree with root test $best$
+        for $v_i$ of $best$ do:
+            examples_i &= $\{e | e \in examples, e.best &= v_i\}$
+            subtree &= DTL(examples, attributes \ best, mode(examples))
+            tree.add($v_i$: subtree)
+    \end{lstlisting}
+\[f: [\text{attribute vector}] \mapsto Boolean\]
+Basically nested if-else 
+
+\subsubsection*{Expresssioveness }
+Decision trees can express any function of the input attributess. Trivially, Consistent trainign set $\rightarrow$ Consistent decision tree, but unlikely to generalize to new examples\newline
+Each row in the truth table is represented as a path in the decison tree 
+\subsubsection*{Size of the hypothesis class}
+For n boolean attributes, there are n boolean func, n distinct truth tables rach with $2^n$ rows $\rightarrow 2^{2^n}$ decision trees
+\subsubsection*{Informativeness}
+Ideally we want to sekect an attibute that aplits the examples into all positive or all negative.\newline
+Entropy: The higher the more random, thus less informative
+\[I(P(v_1)...P(v_k)) &= -\sum_{i=1}^{k} P(v_i)log_2P(v_i)\]
+For data set contains boolean outputs, 
+\[I(P(+), P(-)) &= -\frac{p}{p + n}log_2 \frac{p}{p + n} - \frac{n}{p+n}log_2\frac{n}{p+n}\]
+\subsubsection*{Information gain}
+Information gain &= entropy of this node - entropy of children nodes
+\[IG(A) &= I(\frac{p}{p + n}, \frac{n}{p + n}) - remainder(A)\]
+\[remainder(A) &= \sum_{i=1}^{v}\frac{p_i + n_i}{p + n}I(\frac{p_i}{p_i + n_i}, \frac{n_i}{p_i + n_i})\]
+
+
+\subsubsection*{Decision tree pruning}
+\begin{itemize}
+    \item By sample size 
+    \item by max search depth
+\end{itemize}
+\subsection{unsupervised}
+FInd pattern. No feedback given. e,g, group images by char 
+\subsection{Reinforment}
+Trial and error, reward given based on observation adn action. eg. chess 
+
+
 
 \end{document}

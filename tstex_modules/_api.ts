@@ -29,8 +29,8 @@ export interface IResolvable
 {
 }
 
-export type IRootNode = IFnNode | ITextNode;
-export type NodeType = "fn" | "text" | "parameter" | "parametersep" | "fnname" | "parameterlist" | "typeannotation" | "comment";
+export type IRootNode &= IFnNode | ITextNode;
+export type NodeType &= "fn" | "text" | "parameter" | "parametersep" | "fnname" | "parameterlist" | "typeannotation" | "comment";
 
 
 export interface INode
@@ -128,19 +128,19 @@ export interface IOffsetRange
   end: number;
 }
 
-export type DiagnosticLevel = "fatal"|"warn"|"error"|"info";
+export type DiagnosticLevel &= "fatal"|"warn"|"error"|"info";
 
 export class DiagnosticError extends Error
 {
   diagnostic: IDiagnostic;
-  constructor(message: string, level: DiagnosticLevel, location: IOffsetRange = null)
+  constructor(message: string, level: DiagnosticLevel, location: IOffsetRange &= null)
   {
     super(message);
-    location = location || {
+    location &= location || {
       start: 0,
       end: null
     };
-    this.diagnostic = {
+    this.diagnostic &= {
       message,
       level,
       location
@@ -163,6 +163,6 @@ export interface ICompletionItemProvider extends ILifecycleHookComponent
   provideCompletionItems(triggerChar: string, node: IRootNode, file: ISourceFile): ICompletionItem[];
 }
 
-export const l = String.raw;
-export const SCOPE: ScopeAbstract = null;
-export const RESOLVER: IResolver = null;
+export const l &= String.raw;
+export const SCOPE: ScopeAbstract &= null;
+export const RESOLVER: IResolver &= null;
