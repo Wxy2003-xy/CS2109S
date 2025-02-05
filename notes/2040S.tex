@@ -4,7 +4,7 @@
 \begin{document}
 
 \begin{align*}
-    n \log n &= \mathcal{O}(\log(n!)) \\
+    n \log n = \mathcal{O}(\log(n!)) \\
     &= \mathcal{O} \left(\frac{n}{2} \log n - \frac{n}{2} \log 2 \right) \\
     &= \mathcal{O} \left(\frac{n}{2} \log \frac{n}{2} \right) \\
     &= \mathcal{O} \left(\sum_{i = 0}^{\frac{n}{2}} \log \left(\frac{n}{2} + i\right) \right) \\
@@ -14,7 +14,7 @@
     &= \mathcal{O} \left(\log \left(\frac{n!}{(\frac{n}{2} - 1)!} \right) \right) \\
     &= \mathcal{O} \left(\log \prod_{i = \frac{n}{2}}^{n} i \right) \\
     &\text{(sloppily...)} \\
-    &= \mathcal{O}(\log(n!))
+    = \mathcal{O}(\log(n!))
 \end{align*}
 
 \end{document}

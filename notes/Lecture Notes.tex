@@ -132,14 +132,14 @@ No information that could guide the seaech: no clue how good a state is
     // create visited // with vsited memory
     insert Node(initial_state) to frontier 
     while frontier is not empty: 
-        node &= frontier.pop() 
+        node = frontier.pop() 
         if node.state is goal: 
             return solution 
     //  if node.state in visited: // with vsited memory
     //     continue 
     //  visited.add(state)
         for action in actions(node.state): 
-        next_state &= transition(node.state, action) 
+        next_state = transition(node.state, action) 
         frontier.add(Node(next_state)) 
     return failure
 \end{lstlisting}
@@ -164,15 +164,15 @@ time complexity: exponential to search depth \newline
 space complexity: size of the frontier \newline
 \begin{lstlisting}
     create frontier 
-    tier &= 0
+    tier = 0
     insert Node(initial_state) to frontier 
-    while (!empty(frontier)) &&  (tier <&= limit):
-        node &= frontier.pop() 
+    while (!empty(frontier)) &&  (tier <= limit):
+        node = frontier.pop() 
         tier++
         if node.state is goal: 
             return solution 
         for action in actions(node.state): 
-        next_state &= transition(node.state, action) 
+        next_state = transition(node.state, action) 
         frontier.add(Node(next_state)) 
     return failure
 \end{lstlisting}
@@ -181,15 +181,15 @@ search with depth from 0 to inf \newline
 return soln when found. Both complete 
 \begin{lstlisting}
     create frontier 
-    tier &= 0
+    tier = 0
     insert Node(initial_state) to frontier 
-    while (!empty(frontier)) && (tier <&= limit):
-        node &= frontier.pop() 
+    while (!empty(frontier)) && (tier <= limit):
+        node = frontier.pop() 
         tier++
         if node.state is goal: 
             return solution 
         for action in actions(node.state): 
-        next_state &= transition(node.state, action) 
+        next_state = transition(node.state, action) 
         frontier.add(Node(next_state)) 
     return failure
 \end{lstlisting}
@@ -271,12 +271,12 @@ A math function that assess the quality or desireability of the solution. \newli
 Some solutions may be unacceptable but there are some less bad than the others. 
 \subsection{Hill Climbing/ Greedy Local Search}
 \begin{lstlisting}
-    curr_state &= init_state
+    curr_state = init_state
     while 1:
-        best_succ &= best(successor(curr_state))
-        if (eval(best) <&= eval(curr_state))
+        best_succ = best(successor(curr_state))
+        if (eval(best) <= eval(curr_state))
             return curr_state
-        curr_state &= best_succ
+        curr_state = best_succ
 \end{lstlisting}
 
 \subsection{State space landscape}
@@ -326,20 +326,20 @@ In the view of A, A try to maximize the outcome of the game, B will try to minim
 \begin{lstlisting}[mathescape=true]
     max_value(state):
         if is_terminal(state): return utility(state)
-        v &= -$\infty$
+        v = -$\infty$
         for next_state in expand(state):
-            v &= max(v, min value for player A in next_state)
+            v = max(v, min value for player A in next_state)
         return v
     
     min_value(state):
         if is_terminal(state): return utility(state)
-        v &= $\infty$
+        v = $\infty$
         for next_state in expand(state):
-            v &= min(v, max value for player A in next_state)
+            v = min(v, max value for player A in next_state)
         return v
 
     minimax(state): 
-        v &= max_value(state)
+        v = max_value(state)
         return action in expand(state) with value v
 \end{lstlisting}
 
@@ -353,20 +353,20 @@ An optimized version of the Minimax algorithm using prunning:
 \begin{lstlisting}[mathescape=true]
     max_value(state, $\alpha$, $\beta$):
         if is_terminal(state): return utility(state)
-        v &= -$\infty$
+        v = -$\infty$
         for next_state in expand(state):
-            v &= max(v, min(v, $\alpha$, $\beta$))
+            v = max(v, min(v, $\alpha$, $\beta$))
         return v
     
     min_value(state, $\alpha$, $\beta$):
         if is_terminal(state): return utility(state)
-        v &= $\infty$
+        v = $\infty$
         for next_state in expand(state):
-            v &= min(v, max(v, $\alpha$, $\beta$))
+            v = min(v, max(v, $\alpha$, $\beta$))
         return v
 
     alpha-beta search(state): 
-        v &= max_value(state, -$\infty$, $\infty$) // initialized $\alpha$ to be -$\infty$, $\beta$ to $\infty$
+        v = max_value(state, -$\infty$, $\infty$) // initialized $\alpha$ to be -$\infty$, $\beta$ to $\infty$
         return action in expand(state) with value v
 \end{lstlisting}
 
@@ -406,16 +406,16 @@ using a leanign algorithm  e.g. image ientification
     \item Regression: predict continuous numetical value based on input features
 \end{itemize}
 \subsubsection*{Dataset}
-\[D &= \bigcup_{[1, n]}\{ (x^{(i)}, y^{(i)})\}\]
+\[D = \bigcup_{[1, n]}\{ (x^{(i)}, y^{(i)})\}\]
 \subsubsection*{True data generation function}
-\[y &= f^*(x) + \epsilon\]
+\[y = f^*(x) + \epsilon\]
 where $f^*(x)$ is true but unknow, which generates the label from the input features; $\epsilon$ is some noise or error term, which account for the randomness or imperfection in the date generating process. \newline
 the goal is to find a function that best approximately $f^*(x)$
 \subsubsection*{Hypothesis class}
 THE set of models or functions that maps from inputs to outputs $h:X \implies Y$ that can be learned by a learing algorithm. 
 Each element of the hypo clas $h \in \mathcal{H}$ 
 \subsubsection*{LEarnign algorithm }
-\[A(D_{train}, H_{hypo}) &= h(x),  h\in \mathcal{H} \approx f^*(x)\]
+\[A(D_{train}, H_{hypo}) = h(x),  h\in \mathcal{H} \approx f^*(x)\]
 \subsubsection*{PErformance measure}
 \[h(x) \approx f^*(x)\]
 \[PM(D_{test}, h \in H_{hypo}) \mapsto \]
@@ -423,43 +423,45 @@ Try the hypothesis h on a new set of examples (test data)\\
 
 \subsubsection*{Regression: error}
 \begin{equation}
-    \text{Absolute error} &= |\hat{y} - y|
+    \text{Absolute error} = |\hat{y} - y|
 \end{equation}
 \begin{equation}
-    \text{Squared error} &= (\hat{y} - y)^2 
+    \text{Squared error} = (\hat{y} - y)^2 
 \end{equation}
+Mean squared error
+\[MSE = \frac{1}{N} \sum_{i=0}^{N}(\hat{y}^{(i)} - y^{(i)})^2 \]
 Mean absolute error
-\[MAE &= \dots\]
+\[MAE = \frac{1}{N} \sum_{i=0}^{N}|\hat{y}^{(i)} - y^{(i)}| \]
 where 
-\[\hat{y}^{(i)} &= h(x^{(i)})\]
+\[\hat{y}^{(i)} = h(x^{(i)})\]
 Accuracy: 
-\[A &= \frac{1}{N} \sum_{i=1}^{n} \mathds{1}_{\hat{y}^{(i)} &= y^{(i)}}\]
+\[A = \frac{1}{N} \sum_{i=1}^{n} \mathds{1}_{\hat{y}^{(i)} = y^{(i)}}\]
 
 
 
 \subsubsection*{confusion matrix}
 True positive, false positive, false negatve, true negative (2, 1, 3, 4 quadrnt)\newline
-\[Accuracy &= \frac{TP + TN}{TP + FN + FP + TN}\]
-\[Precision &= \frac{TP}{(TP + FP)}\]
+\[Accuracy = \frac{TP + TN}{TP + FN + FP + TN}\]
+\[Precision = \frac{TP}{(TP + FP)}\]
 maximize if FP is costly
-\[Recall &= \frac{TP}{(TP + FN)}\]
+\[Recall = \frac{TP}{(TP + FN)}\]
 maximize recall if FN is dangerous
-\[F1 &= \frac{2}{\frac{1}{P} + \frac{1}{R}}\]
+\[F1 = \frac{2}{\frac{1}{P} + \frac{1}{R}}\]
 
 
 \subsection[Supervised]{Decision Tree}
 Greedy, top-down, recursive, use
 \begin{lstlisting}[mathescape=true]
     DTL(examples, attributes, default):
-        if (examples &= $\emptyset$): return default
+        if (examples = $\emptyset$): return default
         if ($\forall e \in example, \text{e has the same classification }c$): return c
-        if (attributes &= $\emptyset$): return mode(examples)
+        if (attributes = $\emptyset$): return mode(examples)
 
-        best &= choose_attribute(attributes, examples)
-        tree &= new decision tree with root test $best$
+        best = choose_attribute(attributes, examples)
+        tree = new decision tree with root test $best$
         for $v_i$ of $best$ do:
-            examples_i &= $\{e | e \in examples, e.best &= v_i\}$
-            subtree &= DTL(examples, attributes \ best, mode(examples))
+            examples_i = $\{e | e \in examples, e.best = v_i\}$
+            subtree = DTL(examples, attributes \ best, mode(examples))
             tree.add($v_i$: subtree)
     \end{lstlisting}
 \[f: [\text{attribute vector}] \mapsto Boolean\]
@@ -473,13 +475,13 @@ For n boolean attributes, there are n boolean func, n distinct truth tables rach
 \subsubsection*{Informativeness}
 Ideally we want to sekect an attibute that aplits the examples into all positive or all negative.\newline
 Entropy: The higher the more random, thus less informative
-\[I(P(v_1)...P(v_k)) &= -\sum_{i=1}^{k} P(v_i)log_2P(v_i)\]
+\[I(P(v_1)...P(v_k)) = -\sum_{i=1}^{k} P(v_i)log_2P(v_i)\]
 For data set contains boolean outputs, 
-\[I(P(+), P(-)) &= -\frac{p}{p + n}log_2 \frac{p}{p + n} - \frac{n}{p+n}log_2\frac{n}{p+n}\]
+\[I(P(+), P(-)) = -\frac{p}{p + n}log_2 \frac{p}{p + n} - \frac{n}{p+n}log_2\frac{n}{p+n}\]
 \subsubsection*{Information gain}
-Information gain &= entropy of this node - entropy of children nodes
-\[IG(A) &= I(\frac{p}{p + n}, \frac{n}{p + n}) - remainder(A)\]
-\[remainder(A) &= \sum_{i=1}^{v}\frac{p_i + n_i}{p + n}I(\frac{p_i}{p_i + n_i}, \frac{n_i}{p_i + n_i})\]
+Information gain = entropy of this node - entropy of children nodes
+\[IG(A) = I(\frac{p}{p + n}, \frac{n}{p + n}) - remainder(A)\]
+\[remainder(A) = \sum_{i=1}^{v}\frac{p_i + n_i}{p + n}I(\frac{p_i}{p_i + n_i}, \frac{n_i}{p_i + n_i})\]
 
 
 \subsubsection*{Decision tree pruning}
