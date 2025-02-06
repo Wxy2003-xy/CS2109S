@@ -478,11 +478,12 @@ Entropy: The higher the more random, thus less informative
 \[I(P(v_1)...P(v_k)) = -\sum_{i=1}^{k} P(v_i)log_2P(v_i)\]
 For data set contains boolean outputs, 
 \[I(P(+), P(-)) = -\frac{p}{p + n}log_2 \frac{p}{p + n} - \frac{n}{p+n}log_2\frac{n}{p+n}\]
+where $0 \leq \mathbb{R}_I \leq 1$. However for non-binary variables the entropy can be greater than 1
 \subsubsection*{Information gain}
 Information gain = entropy of this node - entropy of children nodes
 \[IG(A) = I(\frac{p}{p + n}, \frac{n}{p + n}) - remainder(A)\]
 \[remainder(A) = \sum_{i=1}^{v}\frac{p_i + n_i}{p + n}I(\frac{p_i}{p_i + n_i}, \frac{n_i}{p_i + n_i})\]
-
+        
 
 \subsubsection*{Decision tree pruning}
 \begin{itemize}
