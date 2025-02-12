@@ -497,4 +497,120 @@ Trial and error, reward given based on observation adn action. eg. chess
 
 
 
+
+
+
+
+
+
+
+\section{Linear regression}
+\subsection{LR}
+\begin{itemize}
+    \item Data: N data points: $([(feature\_vector, target)])$
+\end{itemize}
+
+Regression: given $x \in \mathbb{R}^d$ and no target, 
+find a function that predicts the target $y \in \mathbb{R}$ 
+
+the function:
+\[f: \mathbb{R}^d \mapsto \mathbb{R}\]
+
+Linear Model:
+\[h_w(x) = \sum_{i=1}^{d} w_i x_i = v_w^Tx\]
+Where $w_i$ are the parameters or weights and $x_0 = 1$ is a dummy variable (always 1), $w_0$ is the bias.
+when d = 1, the model is linear
+
+
+\subsubsection*{Feature Transformation}
+Modify the original features of a dataset to make them more suitable for modeling.
+\begin{itemize}
+    \item Feature engineering
+        \begin{itemize}
+            \item Polynomial features: $z = x^k, k$ is the polynomial degree.
+            \item log feature: $z = \log(x)$
+            \item Exp. feature: $z = e^x$
+        \end{itemize}
+    \item Feature scale
+        \begin{itemize}
+            \item Min-max scaling: $z_i = \frac{x_i - min(x_i)}{max(x_i) - min(x-i)}$, scales to [0, 1]
+            \item standardization: $z_i = \frac{x_i - \mu_i}{\sigma_i}$, transformed data has mean of 0 and SD of 1
+            \item robust scaling (not in syl)
+        \end{itemize}
+    \item Feature encoding (not in syl)
+\end{itemize}
+
+\subsubsection*{Measruing Fit}
+Loss function (MSE of the for N samples):
+\begin{equation}
+    J_{MSE}(w) = \frac{1}{2N}\sum_{i=1}^{N} (h_w(x^{(i)}) - y^{(i)})^2   
+\end{equation}
+Since polynomial regression can be converted into linear regression, by theorem 7.2, the MSE loss function on linear/poly
+nomial regression is convex
+\subsection{Normal Equation}
+Minimize a function: partial derivative 
+\[ f(w) \mapsto \frac{\partial(f(w))}{\partial(w_i)} \quad where \quad f(w) = h_w(x^{(i)})\]
+
+\begin{enumerate}
+    \item Take the partial derivative of the linear model
+    \[\frac{\partial(h_w(x^{(i)}))}{\partial w_j} = \frac{\partial(w^Tx^{(i)})}{\partial w_j} = \frac{\partial(\sum_{i=1}^{N}{w_ix_i})}{\partial w_j}\]
+    \item Take the par. deriv. of each term in the sum, with respect to $w_0$ and $w_1$
+    \[\frac{\partial((h_w(x^{(i)})-y)^2)}{\partial(w_j)} = 2 (h_w(x^{(i)}) - y) x_j\]
+    Where 
+    \[h_w(x^{(i)}) = w_0 + w_1(x^{(i)})\]
+    \[\frac{\partial }{\partial w_0} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left((w_0 + w_1 x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)}) \quad {(x_0 = 1)}\]
+    \[\frac{\partial }{\partial w_1} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left((w_0 + w_1 x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)})(x^{(i)})\]
+    In generalized form, where $N > 1$, 
+    \[\frac{\partial }{\partial w_N} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left(h_w(x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}(h_w(x^{(i)}) - y^{(i)})(x_N^{(i)})\]
+
+\end{enumerate}
+
+\subsubsection*{Normal Equation}
+find w that minimizes $J_{MSE}$:
+\[\frac{\partial(J_{MSE})}{\partial(w_j)} = \frac{1}{N} \sum_{i = 1}^{N} (w^Tx^{(i)} - y^{(i)}) = 0\]
+Where \(w = 
+\begin{bmatrix}
+    w_0 \\w_1 \\\dots \\w_N
+\end{bmatrix}\), $x = \begin{bmatrix}
+    x_0 \\x_1 \\ \dots \\x_N 
+\end{bmatrix}$, $w^Tx$ is just the linear combination of feature vector $w$ on $x$
+\[X^T(Xw - Y) = 0\]
+Suppose invertible
+\[w = (X^TX)^{-1}X^TY\]
+
+\subsection{Gradient Descent}
+
+\begin{itemize}
+    \item GD Algorithm
+    \item Variant: mini-batch, stochastic
+    \item Problems and Solutions
+\end{itemize}
+
+
+
+Computing the paritial derivative to find the minimum is costly, use local search to find a local min
+
+\[w_j \leftarrow w_j - \gamma \frac{\partial(J(w_0, w_1\dots))}{\partial(w_j)}\]
+Where $\gamma$ is the learning rate. \newline
+Repeat until termination criterion is satisfied
+
+
+\subsubsection*{Convexity}
+\begin{theorem}
+    A convex function has one singular global minimum.
+\end{theorem}
+
+\begin{theorem}
+    MSE loss function is convex for linear regression
+\end{theorem}
+
+\subsubsection*{Variants}
+\begin{itemize}
+    \item Batch: take all training samples
+    \item Mini-batch: random subset
+    \item Stochastic: select one random sample
+\end{itemize}
+
+
+
 \end{document}

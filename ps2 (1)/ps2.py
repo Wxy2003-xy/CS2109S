@@ -11,7 +11,9 @@ Run this cell before you start!
 import random
 import time
 
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, int, double
+def total_cost(route: List[int]) -> double:
+    return 0
 
 def transition(route: List[int]) -> List[List[int]]:
     """
@@ -24,6 +26,23 @@ def transition(route: List[int]) -> List[List[int]]:
         new_routes (List[List[int]]): New routes to be considered.
     """
     """ YOUR CODE HERE """
+
+    # Naive version
+    branch_factor:int = 5
+    partial_permutation:List = []
+    for i in range(branch_factor):
+        lst:List = copy(route)
+        rand1:int = random.randint(0, len(route))
+        rand2:int = random.randint(0, len(route))
+        if rand1 == rand2: 
+            continue
+        tmp = route[rand1]
+        route[rand1] = route[rand2]
+        route[rand2] = tmp
+        if total_cost(route) < total_cost(lst):
+            continue
+        partial_permutation.append(lst)
+    return partial_permutation
     raise NotImplementedError
     """ YOUR CODE END HERE """
 
@@ -45,7 +64,7 @@ def test_task_1_3():
     test_transition([7, 8, 6, 3, 5, 4, 9, 2, 0, 1])
 
 ### Task 1.4: Evaluation function
-
+import heapq
 def evaluation_func(
     cities: int,
     distances: List[Tuple[int]],
@@ -68,6 +87,20 @@ def evaluation_func(
         h_n (float): the evaluation score.
     """
     """ YOUR CODE HERE """
+    e = cities
+    largest_e_edges = heapq.nlargest(e, distances, key=lambda x: x[2])
+    max_dist = sum(edge[2] for edge in largest_e_edges)
+    curr = 0
+    for i in range(len(route)):
+        for r in distances:
+            if (i == len(route) - 1):
+                if (route[i] == r[0] and route[0] == r[1]) or (route[i] == r[1] and route[0] == r[0]):
+                    curr += r[2]
+                    continue
+            else:
+                if (route[i] == r[0] and route[i+1] == r[1]) or (route[i] == r[1] and route[i+1] == r[0]):
+                    curr += r[2]    
+    return max_dist - curr       
     raise NotImplementedError
     """ YOUR CODE END HERE """
 
@@ -88,7 +121,10 @@ def test_task_1_4():
 ### Task 1.5: Explain your evaluation function
 
 ### Task 1.6: Implement hill-climbing
-
+import itertools
+def rand_gen(cities: int) -> List[int]:
+    gen = itertools(0,1)
+    return [next(gen) for _ in range(cities)]
 def hill_climbing(
     cities: int,
     distances: List[Tuple[int]],
@@ -117,6 +153,14 @@ def hill_climbing(
             traversed.
     """
     """ YOUR CODE HERE """
+    curr = rand_gen(cities)
+    curr_eval = evaluation_func(cities, distances, curr)
+    while 1:
+        nb = transition(curr)
+        best = max(nb, key=lambda x: evaluation_func(cities, distances, x))
+        if evaluation_func(cities, distances, best) <= curr_eval:
+            return curr
+        curr = best
     raise NotImplementedError
     """ YOUR CODE END HERE """
 

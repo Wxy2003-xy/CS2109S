@@ -80,7 +80,7 @@ class Cube {
             int curr_lvl = get<2>(state);
             for (auto move : moves) {
                 vector<vector<int>> new_config = action(curr_config, move.first, move.second);
-                if (visited->find(new_config) == visited->end()) {
+                if (visited->find(new_config) == visited->end()) {  // not in set
                     visited->insert(new_config);
                     vector<pair<int, int>> new_path(curr_path);
                     new_path.push_back(move);
@@ -101,7 +101,7 @@ class Cube {
         }
         void usc_transition(tuple<vector<vector<int>>, vector<pair<int, int>>, int> state,
                             priority_queue<tuple<vector<vector<int>>, vector<pair<int, int>>, int>,
-                                        vector<tuple<vector<vector<int>>, vector<pair<int, int>>, int>>,
+                                            vector<tuple<vector<vector<int>>, vector<pair<int, int>>, int>>,
                                         decltype(&pq_compare)>& q,
                             unordered_map<vector<vector<int>>, int, StateVectorHash>& visited_cost) {
 

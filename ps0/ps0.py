@@ -12,7 +12,7 @@ b = False       # Assigns false to variable b
 print(a and b) # Logical and; prints False
 print(a or b)  # Logical or; prints True
 print(not a)   # Logical negation ; prints False
-
+    
 s1 = 'hello'
 s2 = "world"
 print(s1)
