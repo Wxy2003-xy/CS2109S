@@ -19,7 +19,7 @@ vector<vector<int>> transition(const vector<int>& route) {
 }
 
 static bool pq_compare(tuple<int, int, double>& a, tuple<int, int, double>& b) {
-    return get<2>(a) > get<2>(b);
+    return get<2>(a) <= get<2>(b);
 }
 
 double upper_bound(int cities, const vector<tuple<int, int, double>>& distances) {
@@ -100,7 +100,7 @@ vector<int> stochastic_hill_climb(int repeats, int cities,
     double score = eval(cities, distances, init);
     for (int i = 0; i < repeats; i++) {
         vector<int> next = hill_climb(cities, distances, transition, eval);
-        double new_score = eval(cities, distances, init);
+        double new_score = eval(cities, distances, next);
         if (new_score > score) {
             init = next;
             score = new_score;
@@ -116,22 +116,15 @@ int main() {
         {2, 3, 50.0}, {2, 4, 45.0},
         {3, 4, 55.0}
     };
-
-    // 🔹 Print fixed test case distances
-    cout << "Fixed test case distances:\n";
-    for (const auto& d : distances) {
-        cout << "City " << get<0>(d) << " - City " << get<1>(d) << " : " << get<2>(d) << "\n";
-    }
-
     // 🔹 Run Hill Climbing
-    vector<int> best_route = stochastic_hill_climb(100000, cities, distances, transition, eval);
-
+    vector<int> best_route = stochastic_hill_climb(1000000, cities, distances, transition, eval);
+    double score = eval(cities, distances, best_route);
     // 🔹 Print the best found route
-    cout << "\nBest Route Found: ";
+    cout << "Best Route Found: ";
     for (int city : best_route) {
         cout << city << " ";
     }
-    cout << best_route[0] << " (Back to start)" << endl;
+    cout << " (Back to start), score: "<< score << endl;
 
     return 0;
 }
