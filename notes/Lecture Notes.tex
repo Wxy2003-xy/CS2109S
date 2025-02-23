@@ -13,6 +13,9 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}[theorem]{Definition}
+\newenvironment{system}%
+{\left\lbrace\begin{array}{@{}l@{}}}%
+{\end{array}\right.}
 \usepackage{listings}  
 \usepackage{dsfont}
 
@@ -567,7 +570,7 @@ Minimize a function: partial derivative
 
 \subsubsection*{Normal Equation}
 find w that minimizes $J_{MSE}$:
-\[\frac{\partial(J_{MSE})}{\partial(w_j)} = \frac{1}{N} \sum_{i = 1}^{N} (w^Tx^{(i)} - y^{(i)}) = 0\]
+\[\frac{\partial(J_{MSE})}{\partial(w_j)} = \frac{1}{N} \sum_{i = 1}^{N} (w^Tx^{(i)} - y^{(i)})x_j^{(i)} = 0\]
 Where \(w = 
 \begin{bmatrix}
     w_0 \\w_1 \\\dots \\w_N
@@ -612,5 +615,86 @@ Repeat until termination criterion is satisfied
 \end{itemize}
 
 
+\section*{Linear regression with Regularization}
+Knowing the hypothesis 
+\[h_w(x): w^Tx\]
+Regularized cost function
+\[J(w) = \frac{1}{2m}\left[\sum_{i = 1}^{m}(h_w(x^{(i)})- y{(i)}) + \lambda\sum_{i=1}^{n} w_i^2\right]\]
+Where \\
+$\sum_{i = 1}^{m}(h_w(x^{(i)})- y{(i)})$ fits the data "well", where
+$ \lambda\sum_{i=1}^{m} w_i^2$ is the regularization parameter, that avoid "over-fitting"
+
+\[w = (X^TX)^{-1}X^TY\]
+
+\[w = (X^TX + \lambda \begin{bmatrix}
+    0 & 0 & \cdots & 0 \\
+    0 & 1 & \cdots & 0 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & \cdots  & 1
+\end{bmatrix}) ^{-1} X^TY\]
+
+As \(w = 
+\begin{bmatrix}
+    w_0 \\w_1 \\\dots \\w_n
+\end{bmatrix}\), here in the regularized cost function, m indicates the size of the training set, while n indicates the size of the feature vector
+large $\lambda \rightarrow$ underfitting; $\lambda = 0 \rightarrow$ overfitting 
+%=============================================================
+
+\section{Logistic Regression}
+\subsection*{Classification Task}
+\[x \in \mathbb{R}^d \mapsto void\]
+Find a function thats 
+\[y \mapsto \{0, 1\} \text{, for each } x\]
+\subsection*{Sigmoid}
+\[\sigma(x) = \frac{1}{1 + e^{-x}}\]
+\[\sigma'(x) = \frac{-(1 + e^{-x})'}{(1 + e^{-x})^2} = \frac{e^{-x}}{1 + 2e^{-x} + e^{-2x}}\]
+
+\subsection*{$\sigma(f(x))$}
+\[\sigma(x^2) = \frac{1}{1 + e^{-x^2}}\]
+
+\subsection*{Decision Boundary}
+A surface that separates the different classes in the featyre space \\
+The intersection betweeen the hypothesis function and the decision threshold \\
+
+\subsection*{Binary Cross Entropy}
+\[BCE(y, \hat{y}) = -ylog(\hat{y}) - (1 - y)log(1 - \hat{y})\]
+
+\[J_{BCE} = \frac{1}{N} \sum BCE_i\]
+
+$\sigma(x) = \frac{1}{1 + e^{-x}}$ is Not convex, but
+$-log(\sigma(x))$ is convex
+
+
+
+Hypothesis function
+\[h_w(x) = \sigma(w_0, w_1 x_1 + w_2 x_2) \]
+Weight Update
+\[w_j \leftarrow w_j - \gamma \frac{\partial J_{BCE}(w_0, w_1, \dots)}{\partial w_j}\]
+
+\subsection{Logistic regression cost function}
+\begin{equation}
+    \begin{system}
+    -log(h_w(x)), \text{ if y = 1}\\
+    -log(1 - h_w(x)), \text{if y = 0}
+    \end{system}
+    \end{equation}
+
+
+\subsection*{Multiclass classification}
+\subsubsection*{One-to-one}
+\[\{0, 1, ... C\} \times \{0, 1, ... C\} \rightarrow (C^2 - C) \text{ BCE}\]
+\subsubsection*{One-vs-Rest}
+\[\{0, 1, ... C\}.map(c \rightarrow \{0, 1, ... C\} \textbackslash \{c\})\]
+
+
+\subsection*{Generalization}
+\subsection*{Data Quality}
+\subsection*{Data Quantity}
+
+\subsection*{Model Complexity}
+
+
 
 \end{document}
+
+
