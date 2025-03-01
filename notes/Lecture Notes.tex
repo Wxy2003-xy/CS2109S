@@ -550,23 +550,63 @@ Loss function (MSE of the for N samples):
 \end{equation}
 Since polynomial regression can be converted into linear regression, by theorem 7.2, the MSE loss function on linear/poly
 nomial regression is convex
-\subsection{Normal Equation}
-Minimize a function: partial derivative 
-\[ f(w) \mapsto \frac{\partial(f(w))}{\partial(w_i)} \quad where \quad f(w) = h_w(x^{(i)})\]
 
+
+
+\subsection{Normal Equation}
 \begin{enumerate}
     \item Take the partial derivative of the linear model
-    \[\frac{\partial(h_w(x^{(i)}))}{\partial w_j} = \frac{\partial(w^Tx^{(i)})}{\partial w_j} = \frac{\partial(\sum_{i=1}^{N}{w_ix_i})}{\partial w_j}\]
+    \begin{equation}
+        \frac{\partial(h_w(x^{(i)}))}{\partial w_j} = \frac{\partial(w^Tx^{(i)})}{\partial w_j} = x_j^{(i)}    
+    \end{equation}
     \item Take the par. deriv. of each term in the sum, with respect to $w_0$ and $w_1$
-    \[\frac{\partial((h_w(x^{(i)})-y)^2)}{\partial(w_j)} = 2 (h_w(x^{(i)}) - y) x_j\]
-    Where 
-    \[h_w(x^{(i)}) = w_0 + w_1(x^{(i)})\]
-    \[\frac{\partial }{\partial w_0} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left((w_0 + w_1 x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)}) \quad {(x_0 = 1)}\]
-    \[\frac{\partial }{\partial w_1} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left((w_0 + w_1 x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)})(x^{(i)})\]
+    \begin{equation}
+        \frac{\partial((h_w(x^{(i)})-y)^2)}{\partial(w_j)} = 2 (h_w(x^{(i)}) - y) x_j^{(i)}  \text{     (chain rule)}
+    \end{equation}
+    \item hence
+    \begin{equation}
+        \frac{\partial}{\partial w_j} J_{MSE}(w) = \frac{1}{2N} \frac{\partial}{\partial w_j}\sum_{i=1}^{N}(h_w(x^{(i)})-y)^2 \\
+        = \frac{1}{N} \sum_{i=1}^{N}(h_w(x^{(i)}) - y) x_j^{(i)}
+    \end{equation}
+    As \(h_w(x^{(i)}) = w_0 + w_1(x^{(i)})\) in linear regression,
+    \[\frac{\partial }{\partial w_0} J_{MSE}(w)= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)}) \quad {(x_0 = 1)}\]
+    \[\frac{\partial }{\partial w_1} J_{MSE}(w)= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)})(x^{(i)})\]
     In generalized form, where $N > 1$, 
     \[\frac{\partial }{\partial w_N} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left(h_w(x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}(h_w(x^{(i)}) - y^{(i)})(x_N^{(i)})\]
-
 \end{enumerate}
+Code example:
+\begin{lstlisting}[mathescape=true]
+def gradient_descent_multi_variable(X, y, lr = 1e-5, number_of_epochs = 250):'''
+    Approximate bias and weight that gave the best fitting line.
+        Parameters
+        ----------
+            X (np.ndarray) : (m, n) numpy matrix representing feature matrix
+            y (np.ndarray) : (m, 1) numpy matrix representing target values
+            lr (float) : Learning rate
+            number_of_epochs (int) : Number of gradient descent epochs
+        Returns
+        -------
+            bias (float):
+                The bias constant
+            weights (np.ndarray):
+                A (n, 1) numpy matrix that specifies the weight constants.
+            loss (list):
+                A list where the i-th element denotes the MSE score at i-th epoch.'''
+    bias:number = 0
+    weights = np.full((X.shape[1], 1), 0).astype(float)
+    loss:List[number] = []
+    N:number = X.shape[0]  
+    pred = X @ weights + bias       # pred:$\mathbb{R}^{m\times 1}$ = $X:\mathbb{R}^{m\times n} \times w:\mathbb{R}^{n\times 1} $+ bias:number
+    for e in range(number_of_epochs): 
+        pred = X @ weights + bias
+        g_w = (1 / N) * (X.T @ (pred - y)) # $\frac{\partial }{\partial w_1}J_{MSE}(w) = \frac{1}{N} X^T((Xw + bias) - y)$
+        g_b = (1 / N) * np.sum(pred - y)   # $\frac{\partial }{\partial w_0}J_{MSE}(w) = \frac{1}{N} \sum_{i=1}^{N} ((Xw + bias) - y)$
+        bias -= lr * g_b                   # $w_0 \leftarrow w_0 - \gamma \frac{\partial J_{MSE}(w)}{\partial w_0}$
+        weights -= lr * g_w                # $w_1 \leftarrow w_1 - \gamma \frac{\partial J_{MSE}(w)}{\partial w_1}$
+        loss.append(mean_squared_error(y, pred))
+    return bias, weights, loss  
+\end{lstlisting}
+
 
 \subsubsection*{Normal Equation}
 find w that minimizes $J_{MSE}$:
@@ -580,6 +620,63 @@ Where \(w =
 \[X^T(Xw - Y) = 0\]
 Suppose invertible
 \[w = (X^TX)^{-1}X^TY\]
+\subsection*{Derive Normal equation from MSE}
+\noindent Derive:
+  $w = (X^T X)^{-1} X^T y$
+From:
+   $ MSE = \frac{1}{N} \sum_{i=1}^{N}(\hat{y}^{(i)} - y^{(i)})^2 $
+
+\subsubsection*{Proof}
+We start with the Mean Squared Error (MSE) function:
+\begin{equation}
+    MSE = \frac{1}{N} \sum_{i=1}^{N} (\hat{y}^{(i)} - y^{(i)})^2,
+\end{equation}
+where \( \hat{y}^{(i)} = h_w(x^{(i)}) = w^T x^{(i)} \), with \( w \in \mathbb{R}^{d \times 1} \) and \( y \in \mathbb{R}^{N \times 1} \).
+Expanding in terms of matrix notation, let \( A = Xw - y \), where \( X \in \mathbb{R}^{N \times d} \) with rows \( x^{(i)} \), then:
+\begin{equation}
+    MSE = \frac{1}{N} \sum_{i=1}^{N} (w^T x^{(i)} - y^{(i)})^2 = \frac{1}{N} (A^T A).
+\end{equation}
+Rewriting:
+\begin{equation}
+    MSE = \frac{1}{N} (Xw - y)^T (Xw - y),
+\end{equation}
+which expands further as:
+\begin{equation}
+    MSE = \frac{1}{N} \left( w^T X^T X w - w^T X^T y - y^T X w + y^T y \right).
+\end{equation}
+Since \( w^T X^T X w \) and \( y^T X w \) are scalars, we simplify:
+\begin{equation}
+    MSE = \frac{1}{N} \left( w^T X^T X w - 2 w^T X^T y + y^T y \right).
+\end{equation}
+To minimize MSE, we take the partial derivative with respect to \( w \):
+\begin{equation}
+    \frac{\partial}{\partial w} \left[ \frac{1}{N} \left( w^T X^T X w - 2 w^T X^T y + y^T y \right) \right].
+\end{equation}
+Differentiating term by term:
+\begin{equation}
+    \frac{\partial}{\partial w} (w^T X^T X w) = 2X^T X w,
+\end{equation}
+\begin{equation}
+    \frac{\partial}{\partial w} (-2 w^T X^T y) = -2 X^T y,
+\end{equation}
+\begin{equation}
+    \frac{\partial}{\partial w} (y^T y) = 0.
+\end{equation}
+Thus,
+\begin{equation}
+    \frac{\partial}{\partial w} (MSE) = \frac{1}{N} (2X^T X w - 2X^T y).
+\end{equation}
+Setting the derivative to zero for minimization:
+\begin{equation}
+    \frac{2}{N} X^T X w - \frac{2}{N} X^T y = 0.
+\end{equation}
+\begin{equation}
+    X^T X w = X^T y.
+\end{equation}
+Solving for \( w \), assuming \( X^T X \) is invertible:
+\begin{equation}
+    w = (X^T X)^{-1} X^T y.
+\end{equation}
 
 \subsection{Gradient Descent}
 
@@ -658,19 +755,15 @@ The intersection betweeen the hypothesis function and the decision threshold \\
 
 \subsection*{Binary Cross Entropy}
 \[BCE(y, \hat{y}) = -ylog(\hat{y}) - (1 - y)log(1 - \hat{y})\]
-
-\[J_{BCE} = \frac{1}{N} \sum BCE_i\]
-
+\[J_{BCE}(w) = \frac{1}{N} \sum_{i=1}^{N} BCE(y^{(i)}, h_w(x^{(i)}))\]
 $\sigma(x) = \frac{1}{1 + e^{-x}}$ is Not convex, but
-$-log(\sigma(x))$ is convex
-
-
-
+$-log(\sigma(x))$ is convex\\
 Hypothesis function
 \[h_w(x) = \sigma(w_0, w_1 x_1 + w_2 x_2) \]
 Weight Update
 \[w_j \leftarrow w_j - \gamma \frac{\partial J_{BCE}(w_0, w_1, \dots)}{\partial w_j}\]
-
+Loss function derivative
+\[\frac{\partial J_{BCE}(w_j)}{\partial w} = \frac{\partial}{\partial w_j} \frac{1}{N} \sum_{i=1}^{N} BCE(y^{(i)}, h_w(x^{(i)})) = \frac{1}{N} \sum_{i=1}^{N} (h_w(x^{(i)}) - y^{(i)})x_j^{(i)}\]
 \subsection{Logistic regression cost function}
 \begin{equation}
     \begin{system}
@@ -683,15 +776,50 @@ Weight Update
 \subsection*{Multiclass classification}
 \subsubsection*{One-to-one}
 \[\{0, 1, ... C\} \times \{0, 1, ... C\} \rightarrow (C^2 - C) \text{ BCE}\]
+One-vs-One is a technique where a separate binary classifier is $\mathcal{C}$ trained for every pair of classes. For $\mathcal{C}$ classes, this results in $\frac{\mathcal{C}(\mathcal{C} - 1)}{2}$ classifiers. Each classifier distinguishes between two specific classes.
 \subsubsection*{One-vs-Rest}
 \[\{0, 1, ... C\}.map(c \rightarrow \{0, 1, ... C\} \textbackslash \{c\})\]
+One-vs-Rest is a technique where a separate binary classifier is trained for each class, treating all other classes as a single combined class. For $\mathcal{C}$ classes, this results in $\mathcal{C}$ classifiers.
 
 
 \subsection*{Generalization}
-\subsection*{Data Quality}
-\subsection*{Data Quantity}
+\begin{itemize}
+    \item In supervised learning, and machine learning in general, the model's performance on unseen data is all we care about. This ability to perform well on new, unseen data is known as the model's generalization capability. 
+    \item Measuring a model's error is a common practice to quantify the performance of the model. This error, when evaluated on unseen data, is known as the generalization error.
+    \item There are two factors that affect generalization:
+    \begin{itemize}
+        \item Dataset quality 
+        \begin{itemize}
+            \item Relevance: Dataset should contain relevant data, i.e., features that are relevant for solving the problem.
+            \item Noise: Dataset may contain noise (irrelevant or incorrect data), which can hinder the model's learning process and reduce generalization.
+            \item Balance (for classification): Balanced datasets ensure that all classes are adequately represented, helping the model learn to generalize well across different classes.
+        \end{itemize}
+        \item Data quantity
+        \begin{itemize}
+            \item In general, having more data typically leads to better model performance, provided that the model is expressive enough to accurately capture the underlying patterns in the data
+            \item Extreme case: if the dataset contains every possible data point, the model would no longer need to "guess" or make predictions. Instead, it would only need to simply memorize all the data!
+        \end{itemize}
+        \item Model complexity
+        \begin{itemize}
+            \item Refers to the size and expressiveness of the hypothesis class.
+            \item Indicates how intricate the relationships between input and output variables that the model can capture are.
+            \item Higher model complexity allows for more sophisticated modeling of input-output relationships
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
 
-\subsection*{Model Complexity}
+\subsection*{Hyperparameter}
+Hyperparameters are settings that control the behavior of the training algorithm and model but are not learned from the data. They need to be set before the training process begins. Such as 
+\begin{itemize}
+    \item Learning rate
+    \item Feature transformations
+    \item Batch size and iterations in mini-batch gradient descent
+\end{itemize}
+\subsection*{Hyperparameter Tuning}
+Hyperparameter tuning is the process of hyperparameters optimizing the of a machine learning model to improve its performance. It is also known as hyperparameter search.
+\subsubsection*{Objective} 
+The goal is to find the best combination of hyperparameters that maximize the model's performance.
+
 
 
 

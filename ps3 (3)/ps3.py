@@ -126,7 +126,8 @@ def get_bias_and_weight(X, y, include_bias = True):
         weights (np.ndarray):
             A (n, 1) numpy matrix representing the weight constant(s).
     '''
-  
+    Z = add_bias_column(X)
+    return np.linalg.inv(np.transpose(Z) @ Z) @ np.transpose(Z) @ y
     """ YOUR CODE HERE """
     raise NotImplementedError
     """ YOUR CODE END HERE """
