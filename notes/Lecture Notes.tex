@@ -35,7 +35,8 @@
   breakatwhitespace=true,
   tabsize=3
 }
-\geometry{top=1in, bottom=1in, left=1in, right=1in}
+\geometry{top=0.3in, bottom=0.3in, left=0.3in, right=0.3in}
+
 
 \begin{document}
 
@@ -207,16 +208,18 @@ return soln when found. Both complete
     \hline
     Depth-first Search             & Exponential               & Polynomial                  & No\#                 & No           \\
     \hline
-    Depth-limited Search           & Exponential               & Polynomial**                & No**               & No**           \\
+    Depth-limited Search(DFS)          & Exponential               & Polynomial               & No               & No           \\
     \hline
-    Iterative Deepening Search     & Exponential               & Exponential**               & Yes                & Yes              \\
+    Depth-limited Search(BFS)           & Exponential               & Exponential                & No               & Yes           \\
+    \hline
+    Iterative Deepening Search(DFS)     & Exponential               & Exponential               & Yes                & Yes              \\
+    \hline
+    Iterative Deepening Search(BFS)     & Exponential               & Exponential               & Yes                & Yes              \\
     \hline
 \end{tabular}
 \newline
 \# Not complete if not tracking visited nodes, search may stuck in loop before visiting all nodes. \newline
 * In terms of some notion of depth/tier \newline
-** If used with DFS
-
 
 
 
@@ -289,6 +292,59 @@ Some solutions may be unacceptable but there are some less bad than the others.
     \item shoulder: 
 \end{itemize}
 
+\section{Heuristics}
+\subsection*{Admissibility}
+A heuristic function \( h(n) \) is \textbf{admissible} if it \textbf{never overestimates} the true cost \( h^*(n) \) of reaching the goal state. Formally, for all nodes \( n \):
+
+\[
+h(n) \leq h^*(n)
+\]
+
+where:
+\begin{itemize}
+    \item \( h(n) \) is the estimated cost from node \( n \) to the goal.
+    \item \( h^*(n) \) is the true minimum cost from \( n \) to the goal.
+\end{itemize}
+
+An admissible heuristic ensures that an A\(^*\) search using it will always find an \textbf{optimal} solution.
+
+\subsection*{Consistency (Monotonicity)}
+A heuristic \( h(n) \) is \textbf{consistent} (or \textbf{monotonic}) if, for every node \( n \) and every successor node \( n' \) reached via action \( a \), the estimated heuristic cost satisfies:
+
+\[
+h(n) \leq h(n') + c(n, n')
+\]
+
+where:
+\begin{itemize}
+    \item \( c(n, n') \) is the actual cost of moving from \( n \) to \( n' \).
+\end{itemize}
+
+Consistency implies that the estimated cost of a node never increases by more than the cost of an actual move, ensuring that the total estimated cost \( f(n) = g(n) + h(n) \) is always non-decreasing along a path.
+
+\subsection*{Relationship Between Admissibility and Consistency}
+\begin{itemize}
+    \item If a heuristic is \textbf{consistent}, it is also \textbf{admissible}.
+    \item If a heuristic is \textbf{admissible}, it is \textbf{not necessarily consistent}.
+\end{itemize}
+\subsection*{Prove: Consistency implies admissibility}
+Admissibility
+\begin{equation}
+    \forall n \in State, h(n) \leq \sum_{i = start}^{goal}c(i', a, i)
+\end{equation}
+Consistency
+\begin{equation}
+    \forall n \in State, \forall a \in Action, h(n) \leq h(n') + c(n', a, n)
+\end{equation}
+\begin{proof}
+    Base case: $n_{start} \vdash n_{goal}$, $h(n_{goal}) = h^*(n_{goal})$, 
+    \[h(n_{start}) \leq c(n_{start}, n_{goal}) + h^*(n_{goal}) = h^*(n_{start})\]
+    Inductive case: suppose n is of k distance away from $n_{goal}$ on the optimal path from $n_{start}$. From the base case we have, 
+    \[h(n_k) \leq h^*(n_k)\]
+    \[h(n_{k-1}) \leq h(n_k) + c(n_{k-1}, n_k) \leq h^*(n_k) + c(n_{k-1}, n_k) = h^*(n_{k-1})\]
+
+
+\end{proof}
 
 
 
@@ -770,7 +826,7 @@ Loss function derivative
     -log(h_w(x)), \text{ if y = 1}\\
     -log(1 - h_w(x)), \text{if y = 0}
     \end{system}
-    \end{equation}
+\end{equation}
 
 
 \subsection*{Multiclass classification}
