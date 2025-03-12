@@ -771,6 +771,18 @@ Repeat until termination criterion is satisfied
 \section*{Linear regression with Regularization}
 Knowing the hypothesis 
 \[h_w(x): w^Tx\]
+Penalize weights in the loss fucntion
+\[J_{reg}(w) = J(w) + \lambda P(w)\]
+Optimization goal: $\min(J_{reg}(w))$\\
+Penalty functions
+\begin{enumerate}
+    \item L1 penalty (Laso Regression in Linear regression): $P(w) = \sum_{j=0}^{d}|w_j|$
+    \item L2 penalty (Ridge regression in linear regression): $P(w) = \sum_{j=0}^{d}\frac{1}{2}w^2_j$
+\end{enumerate}
+\subsubsection*{Gradient descent of regularized loss function}
+\begin{equation}
+    \frac{\partial J_{reg}(w)}{\partial w} = \frac{\partial J(w)}{\partial w} + \frac{\partial \lambda P(w)}{\partial w}
+\end{equation}
 Regularized cost function
 \[J(w) = \frac{1}{2m}\left[\sum_{i = 1}^{m}(h_w(x^{(i)})- y{(i)}) + \lambda\sum_{i=1}^{n} w_i^2\right]\]
 Where \\
@@ -780,12 +792,12 @@ $ \lambda\sum_{i=1}^{m} w_i^2$ is the regularization parameter, that avoid "over
 \[w = (X^TX)^{-1}X^TY\]
 
 \[w = (X^TX + \lambda \begin{bmatrix}
-    0 & 0 & \cdots & 0 \\
+    1 & 0 & \cdots & 0 \\
     0 & 1 & \cdots & 0 \\
     \vdots & \vdots & \ddots & \vdots \\
     0 & 0 & \cdots  & 1
-\end{bmatrix}) ^{-1} X^TY\]
-
+\end{bmatrix}^{m\times m}) ^{-1} X^TY\]\\
+$\forall \lambda > 0, X^TX + \lambda I$ is invertible\\
 As \(w = 
 \begin{bmatrix}
     w_0 \\w_1 \\\dots \\w_n
