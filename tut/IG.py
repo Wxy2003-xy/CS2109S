@@ -29,12 +29,13 @@ def compute_IG_boolean(parent_pos, parent_neg, left_pos, left_neg, right_pos, ri
     return parent_entropy - weighted_child_entropy
 
 
-x0 = np.matrix([[1], [1], [1], [1]])
-x1 = np.matrix([[6], [8], [12], [2]])
-x2 = np.matrix([[4], [5], [9], [1]])
-x3 = np.matrix([[11], [9], [25], [3]])
-y = np.matrix([[20], [1], [3], [7]])
-X = np.hstack([x0, x1, x2, x3])
-Xt = np.transpose(X)
-w = np.linalg.inv(Xt @ X) @ Xt @ y
-print(w)
+# x0 = np.matrix([[1], [1], [1], [1]])
+# x1 = np.matrix([[6], [8], [12], [2]])
+# x2 = np.matrix([[4], [5], [9], [1]])
+# x3 = np.matrix([[11], [9], [25], [3]])
+# y = np.matrix([[20], [1], [3], [7]])
+# X = np.hstack([x0, x1, x2, x3])
+# Xt = np.transpose(X)
+# w = np.linalg.inv(Xt @ X) @ Xt @ y
+# print(w)
+

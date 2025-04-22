@@ -628,7 +628,7 @@ nomial regression is convex
     \[\frac{\partial }{\partial w_0} J_{MSE}(w)= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)}) \quad {(x_0 = 1)}\]
     \[\frac{\partial }{\partial w_1} J_{MSE}(w)= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)})(x^{(i)})\]
     In generalized form, where $N > 1$, 
-    \[\frac{\partial }{\partial w_N} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left(h_w(x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}(h_w(x^{(i)}) - y^{(i)})(x_N^{(i)})\]
+    \[\frac{\partial }{\partial w_N} \left[ \frac{1}{2N} \sum_{i=1}^{N} \left(h_w(x^{(i)}) - y^{(i)}\right)^2 \right]= \frac{1}{N} \sum_{i=1}^{N}(h_w(x^{(i)}) - y^{(i)})(x^{(i)^N})\]
 \end{enumerate}
 Code example:
 \begin{lstlisting}[mathescape=true]
@@ -779,16 +779,27 @@ Penalty functions
     \item L1 penalty (Laso Regression in Linear regression): $P(w) = \sum_{j=0}^{d}|w_j|$
     \item L2 penalty (Ridge regression in linear regression): $P(w) = \sum_{j=0}^{d}\frac{1}{2}w^2_j$
 \end{enumerate}
+
 \subsubsection*{Gradient descent of regularized loss function}
 \begin{equation}
     \frac{\partial J_{reg}(w)}{\partial w} = \frac{\partial J(w)}{\partial w} + \frac{\partial \lambda P(w)}{\partial w}
 \end{equation}
-Regularized cost function
-\[J(w) = \frac{1}{2m}\left[\sum_{i = 1}^{m}(h_w(x^{(i)})- y{(i)}) + \lambda\sum_{i=1}^{n} w_i^2\right]\]
+Regularized cost function (Ridge)
+\[J(w) = \frac{1}{2m}\left[\sum_{i = 1}^{m}(h_w(x^{(i)})- y{(i)}) + \lambda\sum_{i=0}^{n} w_i^2\right]\]
 Where \\
 $\sum_{i = 1}^{m}(h_w(x^{(i)})- y{(i)})$ fits the data "well", where
-$ \lambda\sum_{i=1}^{m} w_i^2$ is the regularization parameter, that avoid "over-fitting"
-
+$ \lambda\sum_{i=0}^{m} w_i^2$ is the regularization parameter, that avoid "over-fitting"
+Regularized $J_{MSE}$ using Ridge
+\[\frac{\partial J}{\partial w_i}  = \frac{1}{2m} \left[\frac{\partial}{\partial w_i}\sum_{i=1}^{m}(w_0 + w_1 x^{(i)} - y^{(i)})^2 
++ \lambda \frac{\partial}{\partial w_i} \sum_{i = 0}^{n}w_i^2\right]\]
+\[= \frac{1}{m} \left[\sum_{i=1}^{m} (w_0 + w_1x^{(i)} - y^{(i)})(x^{(i)}) + \lambda w_i\right], \indent x_0\text{ = 1}\]
+Regularized $J_{MSE}$ using Lasso
+\[\frac{\partial J}{\partial w_i}  = \frac{1}{2m} \left[\frac{\partial}{\partial w_i}\sum_{i=1}^{m}(w_0 + w_1 x^{(i)} - y^{(i)})^2 
++ \lambda \frac{\partial}{\partial w_i} \sum_{i = 0}^{n}|w_i|\right]\]
+\[\color{red}= \frac{1}{m} \left[\sum_{i=1}^{m} (w_0 + w_1x^{(i)} - y^{(i)})(x^{(i)}) + \lambda sgn(w_i)\right], \indent x_0\text{ = 1}\]
+Generalized Regularization formula:
+\[\lambda \sum_{i}^{n}|w_i|^p\]
+Lasso reg. is when $p = 1$; Ridge when $p = 2$
 \[w = (X^TX)^{-1}X^TY\]
 
 \[w = (X^TX + \lambda \begin{bmatrix}
@@ -888,8 +899,173 @@ Hyperparameter tuning is the process of hyperparameters optimizing the of a mach
 \subsubsection*{Objective} 
 The goal is to find the best combination of hyperparameters that maximize the model's performance.
 
+High bias: under-fitting 
+High variance: over-fittingx    
+
+\subsection*{K-means Clustering}
+\begin{lstlisting}[mathescape = true]
+    // Initialize K cluster centroids randomly from the dataset
+    for k = 1 in K clusters:
+        $\mu_k$ = random($x \in D$)   // Pick a random data point x from dataset D as the initial centroid
+    
+    // Repeat until convergence (e.g., centroids stop moving)
+    while (! convergence):
+        // Assignment step: assign each point to the nearest centroid
+        for i = 1 in m:
+            $c_i$ = $argmin_k||x^{(i)} - \mu_k||^2$   // Assign point $x^{(i)}$ to the closest cluster (minimizing squared distance)
+    
+        // Update step: move centroids to the mean of assigned points
+        for k = 1 in K:
+            $\mu_k = \frac{1}{|\{x^{(i)} | c^{(i)} = k\}|} \sum_{x\in \{x^{(i)} | c^{(i)} = k\}}^{}x$  
+            // Recompute centroid $\mu_k$ as the mean of all points assigned to cluster k
+    \end{lstlisting}
+    
 
 
+
+
+\subsection*{Dimentsion reduction} 
+\begin{theorem}
+    To learn a hypothesis class with d feature, $N = O(2^d)$ samples are needed. (The curse of dimensinality)
+\end{theorem}
+
+In unsuperised leanring we have a massive data matrix $X^{N \times d}$. Consider $X^T$
+
+\subsubsection*{SVD decomposition}
+\[A^{d \times N} = U^{d \times d}\Sigma^{d \times N} V^{T {(N \times N)}}\]
+Where U contains d orthonormal columns, \\
+$\Sigma$ is a diagnol matrix where $\sigma_1 \geq \sigma_2 \geq ... \geq \sigma_N$ \\
+V contains N orthonormal columns and N orthonormal rows\\
+(Supposing r < N < d)
+\[X^T = \begin{bmatrix}
+| & | & ... & | \\
+x^{(1)} & x^{(2)} & ... & x^{(N)} \\
+| & | & ... & | \\
+\end{bmatrix}_{d \times N} = \begin{bmatrix}
+    | & | & ... & | \\
+    u^{(1)} & u^{(2)} & ... & u^{(d)} \\
+    | & | & ... & | \\
+    \end{bmatrix}_{d \times d} 
+    \begin{bmatrix}
+        \sigma_1 & 0 & ... & 0 \\
+        0 & \sigma_2 & ... & 0 \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & ... & \sigma_N \\
+        0 & 0 & ... & 0 \\
+        \end{bmatrix}_{d \times N}
+        \begin{bmatrix}
+            | & | & ... & | \\
+            v^{(1)} & v^{(2)} & ... & v^{(N)} \\
+            | & | & ... & | \\
+            \end{bmatrix}^T_{N \times N}\]
+\[= \begin{bmatrix}
+    \sigma_1 \sum_{i=1}^{N} u_{i1}v_{i1}     & \sigma_2 \sum_{i = 1}^{N} u_{i1}v_{i2} & ... & \sigma_N \sum_{i=1}^{N} u_{i1}v_{iN} \\
+    \sigma_1 \sum_{i=1}^{N} u_{i2}v_{i1}     & \sigma_2 \sum_{i = 1}^{N} u_{i2}v_{i2} & ... & \sigma_N \sum_{i=1}^{N} u_{i2}v_{iN} \\
+    
+    \vdots & \vdots & \ddots & \vdots \\
+    \sigma_1 \sum_{i=1}^{N} u_{id}v_{i1}     & \sigma_2 \sum_{i = 1}^{N} u_{id}v_{i2} & ... & \sigma_N \sum_{i=1}^{N}w u_{id}v_{iN} \\
+
+    \end{bmatrix} = \begin{bmatrix}
+        | & | & ... & | \\
+        \sum_{i=1}^{N}\sigma_i v^{(i)}_1 u^{(i)}  & \sum_{i=1}^{N}\sigma_i v^{(i)}_2 u^{(i)} & ... & \sum_{i=1}^{N}\sigma_i v^{(i)}_N u^{(i)} \\
+        | & | & ... & | \\
+        \end{bmatrix}\]
+By setting $r$ < $N$, we keep the most significant $r$ dimensions:
+\[\Sigma = \begin{bmatrix}
+    \sigma_1 & 0 & ... & 0 \\
+    0 & \sigma_2 & ... & 0 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & ... & \sigma_N \\
+    0 & 0 & ... & 0 \\
+    \end{bmatrix} \rightarrow \begin{bmatrix}
+        \sigma_1 & ... & 0 & ... & 0 \\
+        \vdots & \ddots & \vdots & ... & \vdots \\
+        0 & ... & \sigma_r & ... & 0 \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & 0 & ... & 0 \\
+        \end{bmatrix} \implies \tilde{U} = \begin{bmatrix}
+            | & | & ... & | \\
+            u^{(1)} & u^{(2)} & ... & u^{(r)} \\
+            | & | & ... & | \\
+            \end{bmatrix}, \text{where } r < N\]
+\[\tilde{X}^T = \]
+After SVD Decomposition, $U$ represents the new orthonormal basis, $\Sigma$ represents the importance, $V^T$ represents the 
+linear combination coefficient.\\ 
+From $\Sigma$ we can tell the significance of the new basis vecotr, we can selectively remove less important ones to reduce the number 
+of dimensions.
+
+\begin{theorem}
+    given a mean-centred data matrix $\hat{X}^T$, the values $\frac{\sigma_j^2}{N - 1}$ is the variance of 
+\end{theorem}
+Therefore to retain a of variance in the data, 
+\[\text{Explained variance}  = \frac{\sum_{i=1}^{r}\sigma_i^2}{\sum_{i=1}^{N}\sigma_i^2} \geq a\]
+\[\text{...} = \frac{\sum_{i=1}^{N}||\hat{x_i}^{(i)} - \tilde{x_i}^{(i)}||^2}{\sum_{i=1}^{N} ||\hat{x}^{(i)}||^2}\]
+\newpage
+
+
+
+
+
+
+
+
+\subsection*{Perceptron Learning algorithm}
+Assuming linearly separable:
+\begin{lstlisting}[mathescape = true]
+    initialize $\textbf{w}$
+    while (i < max_iteration | !convergence):
+        for ($x_i$, $y_i$) in D, if $x_i$ is misclassified:
+            $\hat{y} = h_w(x)$
+            learning_error = $(y_i - \hat{y}_i)$
+            w += $\gamma (y_i - \hat{y}_i) x_i$
+\end{lstlisting}
+\begin{proof}
+    \[\hat{y} = sgn(\textbf{w}^Tx)\]
+Case 1: $y = +1, \hat{y} = -1$\\
+\indent $\hat{y} < 1 \implies \textbf{w}^Tx < 0 \implies \textbf{w}x < 0 \implies |\textbf{w}||x|\cos\theta < 0 \implies \theta \in (\frac{\pi}{2}, \pi)$\\
+\indent But we want the opposite, ie $\hat{y} = +1 \implies \theta \in [0, \frac{\pi}{2}] \implies$ Reduce $\theta$\\
+\indent $\textbf{w}' = \textbf{w} + x \implies \theta' < \theta$ \\
+Case 2: $y = -1, \hat{y} = +1$\\
+\indent Similarly to case1, but the other way round. $\textbf{w}' = \textbf{w} - x \implies \theta' > \theta$\\
+\[\textbf{w}' \leftarrow \textbf{w} + 2\gamma x \]
+\[\textbf{w}' \leftarrow \textbf{w} + \gamma(+1 - (-1)) x \]
+\[\textbf{w}' \leftarrow \textbf{w} + \gamma(y - \hat{y}) x \]
+Trivial to show, both cases arrive at the same update rule.
+\end{proof}
+If the data samples are not linearly separable, such method is not applicable since it does not guarentee convergence.
+
+
+
+
+\subsection*{Multilayer neural network}
+\[\textbf{x} = \begin{bmatrix}
+    x_1 \\ x_2\\x_3
+    \end{bmatrix}, \textbf{W}^{[1]} = \begin{bmatrix}
+        W^{[1]}_{11} & W^{[1]}_{12} \\ W^{[1]}_{21} & W^{[1]}_{22}\\ W^{[1]}_{31} & W^{[1]}_{32} 
+        \end{bmatrix}\]
+        \[\hat{y}^{[1]} = g^{[1]}(\textbf{W}^{[1]T}x)\]
+For n layers, 
+\[\hat{y}^{[n]} = g^{[n]}(W^{[n]^T}\hat{y}^{[n-1]})\]
+\[\hat{y} = g^{[n]}(W^{[n]^T}(g^{[n-1]}(W^{[n-1]^T}... g^{[2]}(W^{[2]^T} g^{[1]}(W^{[1]^T}\textbf{x})))))\]
+This is forward propagation
+
+
+\subsection*{Multi class classification}
+Softmax function
+\[\textbf{x}^{N\times 1} \rightarrow \textbf{z}^{C \times 1}\]
+$\forall z_i \in \textbf{z}, i \in [1, C], z_i \in [0, 1]$, as $z_i$ indicates the probability of $\textbf{x}$ belonging to class $C_i$. 
+To map the neuron network output from $\mathbb{R}$ to $[0, 1]$, we use softmax function: 
+\[g(z_i) = \frac{e^{z_i}}{\sum_{i=1}^{C} z_i}\]
+where $\mathbb{R}_g = [0, 1]$, and $\sum_{i=1}^{C} g(z_i) = 1$, indicating a complete probability distributon.
+
+
+
+
+
+
+
+
+\subsection*{Sequential data}
 
 \end{document}
 
