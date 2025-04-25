@@ -1059,14 +1059,90 @@ To map the neuron network output from $\mathbb{R}$ to $[0, 1]$, we use softmax f
 where $\mathbb{R}_g = [0, 1]$, and $\sum_{i=1}^{C} g(z_i) = 1$, indicating a complete probability distributon.
 
 
+\section{Torch}
+Torch library example:  
+\begin{lstlisting}[mathescape = true]
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
 
+class CNNModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Sequential(
+            # nn.Conv2d(in_chnl, out_chnl, kernel_size, stride, padding)
+            nn.Conv2d(12, 16, kernel_size=3, padding=1),
+            nn.BatchNorm2d(16),
+            nn.GELU()
+        )
+        self.conv2 = nn.Sequential(
+            nn.Conv2d(16, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.GELU()
+        )
+        self.conv3 = nn.Sequential(
+            nn.Conv2d(32, 16, kernel_size=3, padding=0),
+            nn.BatchNorm2d(16),
+            nn.GELU()
+        )
+        # pooling layer
+        self.pool = nn.AdaptiveAvgPool2d((3, 3))
+        self.fc1 = nn.Linear(16 * 3 * 3, 32)
+        self.fc2 = nn.Linear(32, 1)
+        self.dropout = nn.Dropout(0.3)
 
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+        x = self.pool(x)
+        x = x.view(-1, 16 * 3 * 3)
+        x = self.dropout(F.relu(self.fc1(x)))
+        return (self.fc2(x))
 
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
+y_train_tensor = torch.tensor(y_train, dtype=torch.float32)
+X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
+y_test_tensor = torch.tensor(y_test, dtype=torch.float32)
+
+train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = CNNModel().to(device)
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+
+\end{lstlisting}
 
 
 
 \subsection*{Sequential data}
+Recurrent Neural Network (RNN) is a multilayer neural network, which can capture sequential features, by having hidden states
 
+
+
+
+\[\text{Consider a sequence of elements}: x^1 = \begin{bmatrix}
+    x_1^1 \\ x_2^1
+    \end{bmatrix}, x^2 = \begin{bmatrix} x_1^2 \\ x_2^2\end{bmatrix}, x^3 = \begin{bmatrix}x_1^3\\ x_2^3\end{bmatrix}\]
+    \[\text{Initial hidden state} h_0 = \begin{bmatrix}0\\0\end{bmatrix}\]
+Where $\textbf{W}^{[hy]} = \begin{bmatrix}w_1\\ \vdots \\ w_r \end{bmatrix},$
+$\hat{y}^t = \textbf{W}^{[hy]}$\\
+$\textbf{W}^{[hh]} = \begin{bmatrix}w_{11} & ... & w_{1h}\\ \vdots & \ddots & \vdots \\ w_{h1} & ... & w_{hh} \end{bmatrix}, 
+\textbf{W}^{[xh]} = \begin{bmatrix}w_{11} & ... & w_{1h}\\ \vdots & \ddots & \vdots \\ w_{x1} & ... & w_{xh} \end{bmatrix}$
+\[\textbf{h}^t = g^{[h]}\left((\textbf{W}^{[xh]})^T\textbf{x}^t + (\textbf{W}^{[hh]})^T \textbf{h}_{t-1}\right)\]
+\[\hat{y}^t = g^{[y]}\left((\textbf{W}^{[hy]})^T\textbf{h}_t\right)\]
+
+\[\textbf{h}^1 = g^{[h]}\left((\textbf{W}^{[xh]})^T\textbf{x}^1 + (\textbf{W}^{[hh]})^T \textbf{h}_0\right)\]
+\[\text{Update }h_1 = \begin{bmatrix}
+    h_1^1 \\ h_2^1
+\end{bmatrix}\]
+\[\textbf{h}^2 = g^{[h]}\left((\textbf{W}^{[xh]})^T\textbf{x}^2 + (\textbf{W}^{[hh]})^T \textbf{h}_1\right)\]
+\[\hat{y}^2 = \left((\textbf{W}^{[hy]})^T\textbf{h}^2\right)\]
 \end{document}
 
 
