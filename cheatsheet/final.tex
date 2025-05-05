@@ -1,6 +1,6 @@
 \documentclass[8pt,twocolumn]{article}
 
-\usepackage[a4paper, margin=0.2in]{geometry}
+\usepackage[a4paper, margin=0.1in]{geometry}
 \usepackage{titlesec}
 \usepackage{enumitem}
 \usepackage{amsmath}
@@ -40,26 +40,26 @@
   morekeywords={} % add your own identifiers here
 }
 \begin{document}
-\makeatletter
-\renewcommand\maketitle{%
-  \twocolumn[%
-    \begin{center}
-      \begin{minipage}{0.6\textwidth}  % <-- adjust this width
-        \centering
-        {\LARGE\bfseries\@title\par}
-        {\large\@author\par}
-        \vspace{1em}
-      \end{minipage}
-    \end{center}
-  ]
-}
-\makeatother
+% \makeatletter
+% \renewcommand\maketitle{%
+%   \twocolumn[%
+%     \begin{center}
+%       \begin{minipage}{0.6\textwidth}  % <-- adjust this width
+%         \centering
+%         {\LARGE\bfseries\@title\par}
+%         {\large\@author\par}
+%         \vspace{1em}
+%       \end{minipage}
+%     \end{center}
+%   ]
+% }
+% \makeatother
 
-\title{CS2109S Final Cheatsheet}
-\author{@Wxy2003-xy}
-\date{}
+% \title{CS2109S Final Cheatsheet}
+% \author{@Wxy2003-xy}
+% \date{}
 
-\maketitle
+% \maketitle
 \setstretch{0.2}
 \setlength{\extrarowheight}{0pt}
 \setlength{\parskip}{0pt}
@@ -172,7 +172,8 @@
 \end{equation}
     \[\frac{\partial }{\partial w_0} J_{MSE}(w)= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)}) \quad {(x_0 = 1)}\]
     \[\frac{\partial }{\partial w_1} J_{MSE}(w)= \frac{1}{N} \sum_{i=1}^{N}((w_0 + w_1 x^{(i)}) - y^{(i)})(x^{(i)})\]
-\textbf{Normal Equation:} $w = (X^TX)^{-1}X^Ty$.\\
+\textbf{Normal Equation:} $w = (X^TX)^{-1}X^Ty$.\\ 
+not sensitive to the scale of input features\\
 \textbf{Gradient Descent}\vspace{-0.6em}
 \begin{lstlisting}[mathescape=true]
     def gradient_descent_multi_variable(X, y, lr = 1e-5, number_of_epochs = 250):
@@ -222,17 +223,17 @@
         \item Use Cases: Automatic feature selection; sparse model
       \end{itemize}
   \end{itemize}\vspace{-0.6em}
-\textbf{Classification Metrics}\vspace{-0.6em}
+\textbf{Model evaluation Metrics}\vspace{-0.6em}
 \begin{itemize}
     \setlength{\itemsep}{0pt}
     \setlength{\parskip}{0pt}
-    \item \textbf{Accuracy}: $\frac{TP + TN}{TP + FN + FP + TN}$.
-    \item \textbf{Precision}: $\frac{TP}{TP + FP}$.
-    \item \textbf{Recall}: $\frac{TP}{TP + FN}$.
-    \item \textbf{F1-score}: $\frac{2}{\frac{1}{P} + \frac{1}{R}}$.
+    \item \textbf{Accuracy}: $\frac{TP + TN}{TP + FN + FP + TN}$. Suitable for balanced data
+    \item \textbf{Precision}: $\frac{TP}{TP + FP}$. maximize if FP is costly
+    \item \textbf{Recall}: $\frac{TP}{TP + FN}$. maximize recall if FN is dangerous
+    \item \textbf{F1-score}: $\frac{2}{\frac{1}{P} + \frac{1}{R}}$. when care about both precision and recall
 \end{itemize}
 \vspace{-0.6em}
-\textbf{Decision Trees}\vspace{-0.6em}
+\textbf{Decision Trees: Classification}\vspace{-0.6em}
 \begin{lstlisting}[mathescape=true]
     DTL(examples, attributes, default):
         if (examples = $\emptyset$): return default
@@ -266,8 +267,6 @@
     Information gain = entropy of this node - entropy of children nodes
     \[IG(A) = I(\frac{p}{p + n}, \frac{n}{p + n}) - remainder(A)\] Initial $I = 1$
     \[remainder(A) = \sum_{i=1}^{v}\frac{p_i + n_i}{p + n}I(\frac{p_i}{p_i + n_i}, \frac{n_i}{p_i + n_i})\]
-\textbf{Normal equation}:\vspace{-0.6em}
-\[w = (X^T X)^{-1} X^T y\]
 \textbf{Multiclass Classification:}\\
 \textbf{One-vs-One:} Train $C(C-1)/2$ classifiers.\\
 \textbf{One-vs-Rest:} Train $C$ classifiers.\\
@@ -287,24 +286,30 @@ Loss function derivative
     \begin{itemize}
         \setlength{\itemsep}{0pt}
         \setlength{\parskip}{0pt}
-        \item Feature engineering\vspace{-0.6em}
+        \item \textbf{Feature engineering}\vspace{-0.6em}
             \begin{itemize}
                 \setlength{\itemsep}{0pt}
                 \setlength{\parskip}{0pt}
-                \item Polynomial features: $z = x^k, k$ is the polynomial degree.
-                \item log feature: $z = \log(x)$
-                \item Exp. feature: $z = e^x$
+                \item \textbf{Polynomial features}: $z = x^k, k$ is the polynomial degree.
+                \item \textbf{log feature}: $z = \log(x)$:compress large values into a smaller range while preserving the relative order of the data, reducing the skew of the data distribution
+                \item \textbf{Exp. feature}: $z = e^x$:emphasize large values, or to Generating convex basis expansions
             \end{itemize}
-        \item Feature scale \vspace{-0.6em}
+        \item \textbf{Feature scale} \vspace{-0.6em}
+            may improve the classifier and hence the test accuracy
             \begin{itemize}
                 \setlength{\itemsep}{0pt}
                 \setlength{\parskip}{0pt}
-                \item Min-max scaling: $z_i = \frac{x_i - min(x_i)}{max(x_i) - min(x-i)}$, scales to [0, 1]
+                \item Min-max scaling: $z_i = \frac{x_i - min(x_i)}{max(x_i) - min(x-i)}$, to [0, 1]
+                \item mean normalization     $
+                    z_i = \frac{x_i - \mu_i}{\max(x_i) - \min(x_i)},
+                  $
+                  roughly maps to \(\bigl[-0.5, 0.5]\). \\ $*$  improve distance-based model performance
                 \item standardization: $z_i = \frac{x_i - \mu_i}{\sigma_i}$, transformed data has mean of 0 and SD of 1
-                \item robust scaling (not in syl)
             \end{itemize}
     \end{itemize}\vspace{-0.6em}
-\textbf{SVM:} transformed feature vector: $\mathbb{R}^{d} \mapsto \mathbb{R}^{M}$
+\textbf{SVM:} transformed feature vector: $\mathbb{R}^{d} \mapsto \mathbb{R}^{M}$. allows for the  parameters to be represented as a linear combination of the training data.\\
+Maximize the margin. Vectors that are on the margin become supporting vectors\\
+linearly separable data: hard-margin SVM handles noise in the data better than logistic classifiers
 \[
 x = [x_1,\,x_2,\,x_3]^\top
 \;\mapsto\;
@@ -321,6 +326,7 @@ For $n$ degree polynomial, $k_{Pn}(u, v) = \phi_{Pn}^T(x^{(j)})\phi_{Pn}(x) = (u
 \textbf{Gaussian kernel:} $k_{RBF}(u, v):= e^{-\frac{||u-v||^2}{2\sigma^2}}$\\
 feature map $\phi_{RBF}$ can map to infinite-dim space, cannot be computed explicitly. \\
 Small $\sigma^2$: pointy; large $\sigma^2$: flat\\
+\textbf{High dimensionality/Highly correlated features:} Use PCA to reduce the dimensionality of the data by finding a new set of orthogonal axes that capture the maximum variance. \\
 \textbf{K-means clustering:} K-means relies on Euclidean distance and assumeslinearly separable clusters
 \begin{lstlisting}[mathescape = true]
 # Initialize K cluster centroids randomly from the dataset
@@ -331,7 +337,8 @@ Small $\sigma^2$: pointy; large $\sigma^2$: flat\\
     while (! convergence):
 # Assignment step: assign each point to the nearest centroid
         for i = 1 in m:
-            $c_i$ = $argmin_k||x^{(i)} - \mu_k||^2$   // Assign point $x^{(i)}$ to the closest cluster (minimizing squared distance)
+            $c_i$ = $argmin_k||x^{(i)} - \mu_k||^2$   
+            # Assign point $x^{(i)}$ to the closest cluster (minimizing distance, Euclidean / Manhattan)
     
 # Update step: move centroids to the mean of assigned points
         for k = 1 in K:
@@ -430,13 +437,13 @@ Hyperparameters are settings that control the behavior of the training algorithm
 initialize $\textbf{w}$
 while (i < max_iteration | !convergence):
     for ($x_i$, $y_i$) in D:
-        $\hat{y} = h_w(x)$
+        $\hat{y} = h_w(x)$ # $W^{N+1 \times 1} \cdot [1, x_i^T]^T$
         if $x_i$ is misclassified:
             learning_error = $(y_i - \hat{y}_i)$
             w += $\gamma (y_i - \hat{y}_i) x_i$
 \end{lstlisting}\vspace{-0.6em}
 On data not linearly separable The algorithm will not converge
-    \[\hat{y} = sgn(\textbf{w}^Tx)\]
+    \[\hat{y} = sgn(\textbf{w}^Tx)\quad (Range \in {-1, 1})\]
 Case 1: $y = +1, \hat{y} = -1$: $\hat{y} < 1 \implies \textbf{w}^Tx < 0 \implies \textbf{w}x < 0 \implies |\textbf{w}||x|\cos\theta < 0 \implies \theta \in (\frac{\pi}{2}, \pi)$\\
 \indent But we want the opposite, ie $\hat{y} = +1 \implies \theta \in [0, \frac{\pi}{2}] \implies$ Reduce $\theta$\\
 \indent $\textbf{w}' = \textbf{w} + x \implies \theta' < \theta$ \\
@@ -490,7 +497,7 @@ Softmax function
 \[\textbf{x}^{N\times 1} \rightarrow \textbf{z}^{C \times 1}\]
 $\forall z_i \in \textbf{z}, i \in [1, C], z_i \in [0, 1]$, as $z_i$ indicates the probability of $\textbf{x}$ belonging to class $C_i$. 
 To map the neuron network output from $\mathbb{R}$ to $[0, 1]$, we use softmax function: 
-\[g(z_i) = \frac{e^{z_i}}{\sum_{i=1}^{C} z_i}\]
+\[g(z_i) = \frac{e^{z_i}}{\sum_{i=1}^{C} z_i} \quad (\text{Non-convex})\]
 where $\mathbb{R}_g = [0, 1]$, and $\sum_{i=1}^{C} g(z_i) = 1$, indicating a complete probability distributon.\\
 \textbf{Chain rule:}
 \[l = h(g(f(x))) \xrightarrow{\text{deriv.}} \frac{\partial l}{\partial x} 
@@ -540,14 +547,28 @@ Loss function:
         \setlength{\parskip}{0pt}
         \item \texttt{torch.optim.SGD} (Stochastic Gradient Descent)
         \item \texttt{torch.optim.Adam}
-      \end{itemize}
+      \end{itemize}\vspace{-0.4em}
     \item \textbf{Important functions}\vspace{-0.6em}
       \begin{itemize}
         \setlength{\itemsep}{0pt}
         \setlength{\parskip}{0pt}
         \item \texttt{optimizer.zero\_grad()}: clear all gradients before computing new ones
         \item \texttt{optimizer.step()}: update weights and notify optimizer that one step is done
+      \end{itemize}\vspace{-0.2em}
+      \item \textbf{Activation functions:}\vspace{-0.2em}
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \setlength{\parskip}{0pt}
+        \item \texttt{ReLU(x) = $x \ge 0 ? x : 0$}  
+          — default hidden‐layer activation; sparse output, alleviates vanishing gradients. Polygon Classification boundary
+        \item \texttt{LeakyReLU(x) = $x \ge 0 ? x : \alpha x$}  
+          — similar to ReLU but with small slope $\alpha$ for $x<0$; avoids “dead” neurons
+        \item \texttt{$\sigma(x) = \frac1{1+e^{-x}}$}  
+          — maps to $(0,1)$; common for binary outputs or gating. Smooth classification boundary
+        \item \texttt{tanh(x) = $2\sigma(2x)-1$}  
+          — zero‐centered in $(-1,1)$; useful in RNNs and when zero mean is preferred
       \end{itemize}
+      \vspace{-0.6em}
   \end{itemize}
   \vspace{-0.6em}
   \begin{lstlisting}[language=Python]
@@ -586,21 +607,22 @@ Loss function:
     \end{lstlisting}
     
 \textbf{Convolution and pooling:}
+\[X_{in}^{H_{in}\times W_{in}} \xrightarrow{\text{padding}} \tilde{X}^{(H_{in}+2P)\times(W_{in}+2P)} \]
 \[
-H_{\rm out}
-= \left\lfloor \frac{H + 2P - K_h}{S} \right\rfloor + 1,
+H_{\text{out}}
+= \left\lfloor \frac{H_{\text{in}} + 2P - H_{\text{ker}}}{S} \right\rfloor + 1,
 \quad
-W_{\rm out}
-= \left\lfloor \frac{W + 2P - K_w}{S} \right\rfloor + 1.
+W_{\text{out}}
+= \left\lfloor \frac{W_{\text{in}} + 2P - W_{\text{ker}}}{S} \right\rfloor + 1.
 \]
-Let \(\tilde X\in\mathbb{R}^{(H+2P)\times(W+2P)}\) be X zero-padded by P on all sides.  Then
+Let \(\tilde X\in\mathbb{R}^{H_{out} \times W_{out}}\) be the zero-padded input.  Then
 \[
 Y_{i,j}
-= \sum_{u=1}^{K_h}\sum_{v=1}^{K_w}
-  W_{u,v}\,\tilde X_{(i-1)S + u,\;(j-1)S + v},
-\quad
-i=1,\dots,H_{\rm out},\;
-j=1,\dots,W_{\rm out}.
+= \sum_{u=1}^{H_{\text{ker}}}\sum_{v=1}^{W_{\text{ker}}}
+  K_{u,v}\,\tilde X_{(i-1)S + u,\;(j-1)S + v},
+\]\[
+i=1,\dots,H_{\text{out}},\;
+j=1,\dots,W_{\text{out}},
 \]
 \noindent\makebox[\columnwidth][c]{%
     \includegraphics[
